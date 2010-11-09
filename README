@@ -1,0 +1,20 @@
+This is the code/documentation folder for the Citizen Cartography Lab THERMOGRAPHER project.
+
+It is open source, free software, and is available under the MIT license (see LICENSE in this directory)
+
+Read more about the project here: ...
+
+/control-code/themographer.pde is the main code file, and runs on Arduino (http://arduino.cc)
+
+==================================================
+
+Buy the EasyDriver stepper motor controller here:
+
+http://www.sparkfun.com/commerce/product_info.php?products_id=9402
+
+-OR-
+
+http://www.trossenrobotics.com/easydriver-v3-stepper-motor-driver.aspx
+
+
+
