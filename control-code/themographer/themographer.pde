@@ -33,10 +33,13 @@
 // connect MLX90614 pin 4 Vss to Arduino pin GND
 // solder 100n capacitor between Vdd and Vss
 
+// Melexis code based on example by:
 // KHM 2010 /  Martin Nawrath
 // Kunsthochschule fuer Medien Koeln
 // Academy of Media Arts Cologne
-//
+// http://interface.khm.de/index.php/lab/experiments/infrared-thermometer-mlx90614/
+
+#include <i2cmaster.h>
 
   // Set up digital pins for issuing commands to the motor controllers.
 
@@ -61,8 +64,30 @@
   float stepperdeg = 22.2222*modeType;     // steps, half steps, quarter or microsteps per degree
   int degx = 40;          // degrees of field of view in x
   int degy = 30;          // degrees of field of view in y
-  void setup() {
+
+  char st1[30]; // used in thermometer section
+  
+//  I am using a Duemilanove, so I changed the twimaster.c to reflect the 16MHz clock, and changed the bus frequency to 50Khz: 
+//
+//#ifndef F_CPU 
+//#define F_CPU 16000000UL 
+//#endif 
+//
+///* I2C clock in Hz */ 
+//#define SCL_CLOCK 50000L 
+
+//  This simple code uses Peter Fleurys libray here: 
+//  http://homepage.hispeed.ch/peterfleury/ ... tware.html 
+//  Scroll down and download the i2c master libraries. 
+//  Create a folder in /{arduino root}/hardware/libraries and copy the 
+//  i2cmaster.h and twimaster.c, renaming the .c file to .cpp 
+
+
+void setup() {
+  
   Serial.begin(9600);     // open the serial connection at 9600bps
+
+  PORTC = (1 << PORTC4) | (1 << PORTC5);  //enable internal pullup resistors on i2c ports (for the melexis)
 
   // here we set all the pins we need to control the 2 motors to OUTPUT
   // since we are going to send commands FROM them, not read data INTO them
@@ -108,8 +133,6 @@ void loop()
   }
 
 
-    
-    Serial.print("Steps: ");
     int stepx = 0;                              // Set the counter variable.     
     while(stepx<(modeType*stepperdeg*degx))                 // Iterate for 200, 400, then 800, then 1600 steps, 
                                                 // depending on full/half/quarter/eighth step mode
@@ -118,6 +141,27 @@ void loop()
       digitalWrite(STEPX, LOW);              // This LOW to HIGH change is what creates the..
       digitalWrite(STEPX, HIGH);             // .."Rising Edge" so the easydriver knows to when to step.
       delayMicroseconds(1600/modeType);     // This delay time determines the speed of the stepper motor. 
+
+        // Thermometer section:
+        long int tpl;
+
+        tpl=readMLXtemperature(0); // read sensor object temperature
+        tpl = tpl *10;
+        tpl = tpl / 5;
+        tpl=tpl-27315;
+        sprintf(st1,"object temp: %03li.%li",tpl/100, abs(tpl %100) );
+        Serial.print(st1);
+        Serial.print("   ");
+
+        tpl=readMLXtemperature(1); // read sensor ambient temperature
+        tpl = tpl *10;
+        tpl = tpl / 5;
+        tpl=tpl-27315;
+        sprintf(st1,"ambient temp: %03li.%li",tpl/100, tpl %100 );
+        Serial.print(st1);
+        Serial.print("   ");
+        Serial.println(",");
+
 
       delay(0);
       stepx++;
@@ -132,7 +176,7 @@ void loop()
       digitalWrite(STEPY, LOW);              // This LOW to HIGH change is what creates the..
       digitalWrite(STEPY, HIGH);             // .."Rising Edge" so the easydriver knows to when to step.
       delayMicroseconds(1600/modeType);     // This delay time determines the speed of the stepper motor. 
-                                                 
+                                  
       delay(0);
       stepy++;
     }                              
@@ -146,6 +190,20 @@ void loop()
 }
 
 
+//
+// A function which writes the temperature in degrees
+// ( in C or F depending on configuration at the top)
+// to the serial monitor (for debugging), types it as
+// a USB keyboard (for camera setups with no flash memory
+// to record to) or stores it on an SD card in a text file.
+//
+int write_image(float temp) {
+
+  // For now we'll just write to serial monitor. Later we will implement other storage techniques.
+  Serial.print(",");
+  Serial.print(temp);
+  
+}
 
 int MS1_MODE(int MS1_StepMode){              // A function that returns a High or Low state number for MS1 pin
   switch(MS1_StepMode){                      // Switch statement for changing the MS1 pin state
@@ -170,8 +228,6 @@ int MS1_MODE(int MS1_StepMode){              // A function that returns a High o
   return MS1_StepMode;
 }
 
-
-
 int MS2_MODE(int MS2_StepMode){              // A function that returns a High or Low state number for MS2 pin
   switch(MS2_StepMode){                      // Switch statement for changing the MS2 pin state
                                              // Different input states allowed are 1,2,4 or 8
@@ -190,3 +246,25 @@ int MS2_MODE(int MS2_StepMode){              // A function that returns a High o
   }
   return MS2_StepMode;
 }
+
+//****************************************************************
+// read MLX90614 i2c ambient or object temperature
+long int readMLXtemperature(int TaTo) {
+    long int lii;
+    int dlsb,dmsb,pec;
+    int dev = 0x5A<<1;
+
+  i2c_init();
+  i2c_start_wait(dev+I2C_WRITE);  // set device address and write mode
+  if (TaTo) i2c_write(0x06); else i2c_write(0x07);                // or command read object or ambient temperature
+
+  i2c_rep_start(dev+I2C_READ);    // set device address and read mode
+  dlsb = i2c_readAck();       // read data lsb
+  dmsb = i2c_readAck();      // read data msb
+  pec = i2c_readNak();
+  i2c_stop();
+
+  lii=dmsb*0x100+dlsb;
+  return(lii);
+}
+
