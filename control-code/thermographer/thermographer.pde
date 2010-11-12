@@ -61,11 +61,16 @@
   int diry = 1;           // dir 0 = down, dir 1 = up
 
   int modeType = 8;       // modeType 1: Full, 2: Half, 4: Quarter, 8: Eighth
-  float stepperdeg = 22.2222*modeType;     // steps, half steps, quarter or microsteps per degree
+  float stepperdeg = 0.55*modeType;     // steps, half steps, quarter or microsteps per degree
   int degx = 40;          // degrees of field of view in x
   int degy = 30;          // degrees of field of view in y
+  int degperpixel = 0.5;  // how many degrees wide each pixel should be 
+                          // (based on how narrow the beam is focused)
 
   char st1[30]; // used in thermometer section
+  char imagerow[640]; // optimistic pixel width
+  
+  int trigger = 0;
   
 //  I am using a Duemilanove, so I changed the twimaster.c to reflect the 16MHz clock, and changed the bus frequency to 50Khz: 
 //
@@ -107,7 +112,13 @@ void setup() {
 
 void loop()
 {
-
+  if (digitalRead(0) == HIGH) { // Only start imaging when you press the big button (not working)
+    trigger = 1;
+  }
+  Serial.print("trigger: ");
+  Serial.println(trigger);
+  
+  if (trigger == 1) {
     digitalWrite(MS1X, MS1_MODE(modeType));  // Set state of MS1 based on the returned value from the MS1_MODE() switch statement.
     digitalWrite(MS2X, MS2_MODE(modeType));  // Set state of MS2 based on the returned value from the MS2_MODE() switch statement.
     digitalWrite(SLEEPX, HIGH);              // Set the Sleep mode to AWAKE.
@@ -116,77 +127,68 @@ void loop()
     digitalWrite(MS2Y, MS2_MODE(modeType));  // Set state of MS2 based on the returned value from the MS2_MODE() switch statement.
     digitalWrite(SLEEPY, HIGH);              // Set the Sleep mode to AWAKE.
 
-
-  if (dirx == 0) {
-    digitalWrite(DIRX, LOW);                 // Set the direction change LOW to HIGH to go in opposite direction
-    dirx = 1;
-  } else {
-    digitalWrite(DIRX, HIGH);
-    dirx = 0;
-  }
-  if (diry == 0) {
-    digitalWrite(DIRY, LOW);                 // Set the direction change LOW to HIGH to go in opposite direction
-    diry = 1;
-  } else {
-    digitalWrite(DIRY, HIGH);
-    diry = 0;
-  }
-
-
-    int stepx = 0;                              // Set the counter variable.     
-    while(stepx<(modeType*stepperdeg*degx))                 // Iterate for 200, 400, then 800, then 1600 steps, 
-                                                // depending on full/half/quarter/eighth step mode
-                                            // This guarantees one full rotation of the spindle.
-    {
-      digitalWrite(STEPX, LOW);              // This LOW to HIGH change is what creates the..
-      digitalWrite(STEPX, HIGH);             // .."Rising Edge" so the easydriver knows to when to step.
+    int panup = degy;
+    while (panup>0) {
+      digitalWrite(STEPY, LOW);              // This LOW to HIGH change is what creates the..
+      digitalWrite(STEPY, HIGH);             // .."Rising Edge" so the easydriver knows to when to step.
       delayMicroseconds(1600/modeType);     // This delay time determines the speed of the stepper motor. 
-
-        // Thermometer section:
-        long int tpl;
-
-        tpl=readMLXtemperature(0); // read sensor object temperature
-        tpl = tpl *10;
-        tpl = tpl / 5;
-        tpl=tpl-27315;
-        sprintf(st1,"object temp: %03li.%li",tpl/100, abs(tpl %100) );
-        Serial.print(st1);
-        Serial.print("   ");
-
-        tpl=readMLXtemperature(1); // read sensor ambient temperature
-        tpl = tpl *10;
-        tpl = tpl / 5;
-        tpl=tpl-27315;
-        sprintf(st1,"ambient temp: %03li.%li",tpl/100, tpl %100 );
-        Serial.print(st1);
-        Serial.print("   ");
-        Serial.println(",");
-
-
-      delay(0);
-      stepx++;
-    }                              
-
-    Serial.println("Steps: ");
+      digitalWrite(DIRY, HIGH);
+      panup--;
+    }
+  
     int stepy = 0;                              // Set the counter variable.     
-    while(stepy<(modeType*stepperdeg*degy))                 // Iterate for 200, 400, then 800, then 1600 steps, 
+    while(stepy<(stepperdeg*degy))                 // Iterate for 200, 400, then 800, then 1600 steps, 
                                                 // depending on full/half/quarter/eighth step mode
                                             // This guarantees one full rotation of the spindle.
     {
       digitalWrite(STEPY, LOW);              // This LOW to HIGH change is what creates the..
       digitalWrite(STEPY, HIGH);             // .."Rising Edge" so the easydriver knows to when to step.
       delayMicroseconds(1600/modeType);     // This delay time determines the speed of the stepper motor. 
-                                  
-      delay(0);
+  
+      
+      int stepx = 0;                              // Set the counter variable.     
+      while(stepx<(stepperdeg*degx))                 // Iterate for 200, 400, then 800, then 1600 steps, 
+                                                  // depending on full/half/quarter/eighth step mode
+                                              // This guarantees one full rotation of the spindle.
+      {
+        digitalWrite(STEPX, LOW);              // This LOW to HIGH change is what creates the..
+        digitalWrite(STEPX, HIGH);             // .."Rising Edge" so the easydriver knows to when to step.
+        delayMicroseconds(1600/modeType);     // This delay time determines the speed of the stepper motor. 
+  
+        // Thermometer section:
+        long int tpl;
+  
+        tpl=readMLXtemperature(0); // read sensor object temperature
+        tpl = tpl *10;
+        tpl = tpl / 5;
+        tpl=tpl-27315;
+        //sprintf(st1,"object temp: %03li.%li",tpl/100, abs(tpl %100) );
+        sprintf(imagerow,"%03li.%li,",tpl/100, abs(tpl %100) );
+   
+        stepx++;
+      }                              
+  
+      Serial.println(st1); // print one row of data
+        
+      if (dirx == 0) {
+        digitalWrite(DIRX, LOW);                 // Set the direction change LOW to HIGH to go in opposite direction
+        dirx = 1;
+      } else {
+        digitalWrite(DIRX, HIGH);
+        dirx = 0;
+      }
+  
       stepy++;
     }                              
-
+  
     //modeType = modeType * 2;                // Multiply the current modeType value by 2 and make the result the new value for modeType.
-                                            // This will make the modeType variable count 1,2,4,8 each time we pass though the while loop.
-   
-  digitalWrite(SLEEPX, LOW);                 // switch off the power to stepper
-  digitalWrite(SLEEPY, LOW);                 // switch off the power to stepper
-
+                                              // This will make the modeType variable count 1,2,4,8 each time we pass though the while loop.
+     
+    digitalWrite(SLEEPX, LOW);                 // switch off the power to stepper
+    digitalWrite(SLEEPY, LOW);                 // switch off the power to stepper
+  
+  }
+  
 }
 
 
