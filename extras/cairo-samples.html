@@ -1,0 +1,801 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0033)http://cairographics.org/samples/ -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Cairo samples</title>
+
+<link rel="stylesheet" href="./cairo-samples_files/style.css" type="text/css">
+<link rel="stylesheet" href="./cairo-samples_files/local.css" type="text/css">
+<link rel="alternate" type="application/rss+xml" title="cairographics.org (RSS)" href="http://cairographics.org/samples/index.rss"><link rel="alternate" type="application/atom+xml" title="cairographics.org (Atom)" href="http://cairographics.org/samples/index.atom">
+
+</head>
+<body>
+
+<div class="header">
+<div id="logo">
+  <a href="http://cairographics.org/"><img alt="cairo" src="./cairo-samples_files/cairo-banner.png"></a>
+</div>
+</div>
+
+<div id="navcontainer">
+<ul id="navlist">
+<li><a href="http://cairographics.org/news/">News</a></li>
+<li><a href="http://cairographics.org/download/">Download</a></li>
+<li><a href="http://cairographics.org/documentation/">Documentation</a></li>
+<li><a href="http://cairographics.org/contact/">Contact</a></li>
+<li><a href="http://cairographics.org/examples/">Examples</a></li>
+</ul>
+</div>
+
+
+<div id="title">
+Cairo samples
+</div>
+
+
+
+
+
+<div id="content">
+<p>This page contains samples of cairo's rendered output and the code
+snippets used to create them. The snippets are meant to be short, and
+easy to understand.</p>
+
+<p><a href="http://cvs.cairographics.org/cairo-demo/cairo_snippets/"><code>cairo_snippets</code></a>, part of the cairo-demo module in cairo CVS, is
+used to create these webpages. <code>cairo_snippets</code> serves as a testbed for
+the rendered output of various cairo backends. The images rendered on
+these webpages are created by the <code>cairo_snippets_png</code> program, which is
+using cairo's software image backend.</p>
+
+<p>The snippet environment, and the original snippets were originally created
+by Øyvind Kolås for a paper submitted to <a href="http://2004.guadec.org/">GUADEC 2004</a>.</p>
+
+<p>All of his original snippet code is considered to be part of the public
+domain.</p>
+
+<div id="feedlink">
+<a class="feedbutton" type="application/rss+xml" href="http://cairographics.org/samples/index.rss">RSS</a> <a class="feedbutton" type="application/atom+xml" href="http://cairographics.org/samples/index.atom">Atom</a>
+</div>
+
+
+<span class="header"><a href="http://cairographics.org/samples/arc/">arc</a></span>
+
+<div class="tutright"><img src="./cairo-samples_files/arc.png" alt="" width="256" height="256"></div>
+
+<pre><code>double xc = 128.0;
+double yc = 128.0;
+double radius = 100.0;
+double angle1 = 45.0  * (M_PI/180.0);  /* angles are specified */
+double angle2 = 180.0 * (M_PI/180.0);  /* in radians           */
+
+cairo_set_line_width (cr, 10.0);
+cairo_arc (cr, xc, yc, radius, angle1, angle2);
+cairo_stroke (cr);
+
+/* draw helping lines */
+cairo_set_source_rgba (cr, 1, 0.2, 0.2, 0.6);
+cairo_set_line_width (cr, 6.0);
+
+cairo_arc (cr, xc, yc, 10.0, 0, 2*M_PI);
+cairo_fill (cr);
+
+cairo_arc (cr, xc, yc, radius, angle1, angle1);
+cairo_line_to (cr, xc, yc);
+cairo_arc (cr, xc, yc, radius, angle2, angle2);
+cairo_line_to (cr, xc, yc);
+cairo_stroke (cr);
+</code></pre>
+
+
+
+
+
+
+
+<span class="header"><a href="http://cairographics.org/samples/arc_negative/">arc negative</a></span>
+
+<div class="tutright"><img src="./cairo-samples_files/arc_negative.png" alt="" width="256" height="256"></div>
+
+<pre><code>double xc = 128.0;
+double yc = 128.0;
+double radius = 100.0;
+double angle1 = 45.0  * (M_PI/180.0);  /* angles are specified */
+double angle2 = 180.0 * (M_PI/180.0);  /* in radians           */
+
+cairo_set_line_width (cr, 10.0);
+cairo_arc_negative (cr, xc, yc, radius, angle1, angle2);
+cairo_stroke (cr);
+
+/* draw helping lines */
+cairo_set_source_rgba (cr, 1, 0.2, 0.2, 0.6);
+cairo_set_line_width (cr, 6.0);
+
+cairo_arc (cr, xc, yc, 10.0, 0, 2*M_PI);
+cairo_fill (cr);
+
+cairo_arc (cr, xc, yc, radius, angle1, angle1);
+cairo_line_to (cr, xc, yc);
+cairo_arc (cr, xc, yc, radius, angle2, angle2);
+cairo_line_to (cr, xc, yc);
+cairo_stroke (cr);
+</code></pre>
+
+
+
+
+
+
+
+<span class="header"><a href="http://cairographics.org/samples/clip/">clip</a></span>
+
+<div class="tutright"><img src="./cairo-samples_files/clip.png" alt="" width="256" height="256"></div>
+
+<pre><code>cairo_arc (cr, 128.0, 128.0, 76.8, 0, 2 * M_PI);
+cairo_clip (cr);
+
+cairo_new_path (cr);  /* current path is not
+                         consumed by cairo_clip() */
+cairo_rectangle (cr, 0, 0, 256, 256);
+cairo_fill (cr);
+cairo_set_source_rgb (cr, 0, 1, 0);
+cairo_move_to (cr, 0, 0);
+cairo_line_to (cr, 256, 256);
+cairo_move_to (cr, 256, 0);
+cairo_line_to (cr, 0, 256);
+cairo_set_line_width (cr, 10.0);
+cairo_stroke (cr);
+</code></pre>
+
+
+
+
+
+
+
+<span class="header"><a href="http://cairographics.org/samples/clip_image/">clip image</a></span>
+
+<div class="tutright"><img src="./cairo-samples_files/clip_image.png" alt="" width="256" height="256"></div>
+
+<pre><code>int              w, h;
+cairo_surface_t *image;
+
+cairo_arc (cr, 128.0, 128.0, 76.8, 0, 2*M_PI);
+cairo_clip (cr);
+cairo_new_path (cr); /* path not consumed by clip()*/
+
+image = cairo_image_surface_create_from_png ("data/romedalen.png");
+w = cairo_image_surface_get_width (image);
+h = cairo_image_surface_get_height (image);
+
+cairo_scale (cr, 256.0/w, 256.0/h);
+
+cairo_set_source_surface (cr, image, 0, 0);
+cairo_paint (cr);
+
+cairo_surface_destroy (image);
+</code></pre>
+
+
+
+
+
+
+
+<span class="header"><a href="http://cairographics.org/samples/curve_rectangle/">curve rectangle</a></span>
+
+<p>Unless you know what you are doing, you should probably use <a href="http://cairographics.org/samples/rounded_rectangle">rounded rectangle</a> instead.</p>
+
+<div class="tutright"><img src="./cairo-samples_files/curve_rectangle.png" alt="" width="256" height="256"></div>
+
+<pre><code>/* a custom shape that could be wrapped in a function */
+double x0      = 25.6,   /* parameters like cairo_rectangle */
+       y0      = 25.6,
+       rect_width  = 204.8,
+       rect_height = 204.8,
+       radius = 102.4;   /* and an approximate curvature radius */
+
+double x1,y1;
+
+x1=x0+rect_width;
+y1=y0+rect_height;
+if (!rect_width || !rect_height)
+    return;
+if (rect_width/2&lt;radius) {
+    if (rect_height/2&lt;radius) {
+        cairo_move_to  (cr, x0, (y0 + y1)/2);
+        cairo_curve_to (cr, x0 ,y0, x0, y0, (x0 + x1)/2, y0);
+        cairo_curve_to (cr, x1, y0, x1, y0, x1, (y0 + y1)/2);
+        cairo_curve_to (cr, x1, y1, x1, y1, (x1 + x0)/2, y1);
+        cairo_curve_to (cr, x0, y1, x0, y1, x0, (y0 + y1)/2);
+    } else {
+        cairo_move_to  (cr, x0, y0 + radius);
+        cairo_curve_to (cr, x0 ,y0, x0, y0, (x0 + x1)/2, y0);
+        cairo_curve_to (cr, x1, y0, x1, y0, x1, y0 + radius);
+        cairo_line_to (cr, x1 , y1 - radius);
+        cairo_curve_to (cr, x1, y1, x1, y1, (x1 + x0)/2, y1);
+        cairo_curve_to (cr, x0, y1, x0, y1, x0, y1- radius);
+    }
+} else {
+    if (rect_height/2&lt;radius) {
+        cairo_move_to  (cr, x0, (y0 + y1)/2);
+        cairo_curve_to (cr, x0 , y0, x0 , y0, x0 + radius, y0);
+        cairo_line_to (cr, x1 - radius, y0);
+        cairo_curve_to (cr, x1, y0, x1, y0, x1, (y0 + y1)/2);
+        cairo_curve_to (cr, x1, y1, x1, y1, x1 - radius, y1);
+        cairo_line_to (cr, x0 + radius, y1);
+        cairo_curve_to (cr, x0, y1, x0, y1, x0, (y0 + y1)/2);
+    } else {
+        cairo_move_to  (cr, x0, y0 + radius);
+        cairo_curve_to (cr, x0 , y0, x0 , y0, x0 + radius, y0);
+        cairo_line_to (cr, x1 - radius, y0);
+        cairo_curve_to (cr, x1, y0, x1, y0, x1, y0 + radius);
+        cairo_line_to (cr, x1 , y1 - radius);
+        cairo_curve_to (cr, x1, y1, x1, y1, x1 - radius, y1);
+        cairo_line_to (cr, x0 + radius, y1);
+        cairo_curve_to (cr, x0, y1, x0, y1, x0, y1- radius);
+    }
+}
+cairo_close_path (cr);
+
+cairo_set_source_rgb (cr, 0.5, 0.5, 1);
+cairo_fill_preserve (cr);
+cairo_set_source_rgba (cr, 0.5, 0, 0, 0.5);
+cairo_set_line_width (cr, 10.0);
+cairo_stroke (cr);
+</code></pre>
+
+
+
+
+
+
+
+<span class="header"><a href="http://cairographics.org/samples/curve_to/">curve to</a></span>
+
+<div class="tutright"><img src="./cairo-samples_files/curve_to.png" alt="" width="256" height="256"></div>
+
+<pre><code>double x=25.6,  y=128.0;
+double x1=102.4, y1=230.4,
+       x2=153.6, y2=25.6,
+       x3=230.4, y3=128.0;
+
+cairo_move_to (cr, x, y);
+cairo_curve_to (cr, x1, y1, x2, y2, x3, y3);
+
+cairo_set_line_width (cr, 10.0);
+cairo_stroke (cr);
+
+cairo_set_source_rgba (cr, 1, 0.2, 0.2, 0.6);
+cairo_set_line_width (cr, 6.0);
+cairo_move_to (cr,x,y);   cairo_line_to (cr,x1,y1);
+cairo_move_to (cr,x2,y2); cairo_line_to (cr,x3,y3);
+cairo_stroke (cr);
+</code></pre>
+
+
+
+
+
+
+
+<span class="header"><a href="http://cairographics.org/samples/dash/">dash</a></span>
+
+<div class="tutright"><img src="./cairo-samples_files/dash.png" alt="" width="256" height="256"></div>
+
+<pre><code>double dashes[] = {50.0,  /* ink */
+                   10.0,  /* skip */
+                   10.0,  /* ink */
+                   10.0   /* skip*/
+                  };
+int    ndash  = sizeof (dashes)/sizeof(dashes[0]);
+double offset = -50.0;
+
+cairo_set_dash (cr, dashes, ndash, offset);
+cairo_set_line_width (cr, 10.0);
+
+cairo_move_to (cr, 128.0, 25.6);
+cairo_line_to (cr, 230.4, 230.4);
+cairo_rel_line_to (cr, -102.4, 0.0);
+cairo_curve_to (cr, 51.2, 230.4, 51.2, 128.0, 128.0, 128.0);
+
+cairo_stroke (cr);
+</code></pre>
+
+
+
+
+
+
+
+<span class="header"><a href="http://cairographics.org/samples/dotnet-gdi-rendering/">dotnet-gdi-rendering</a></span>
+
+<p>Using GDI+ Bitmap as surface can be as simple as that (given in managed C++):</p>
+
+<pre><code>// Create the target bitmap to draw to.
+Drawing::Bitmap contentBitmap= new Drawing::Bitmap(Width, Height);
+
+// Create a Graphics object to have a device context we can pass to cairo.
+Graphics^ g = Graphics::FromImage(contentBitmap);
+g-&gt;SmoothingMode = SmoothingMode::HighQuality;
+
+// Do some drawing in GDI+ to have some initial content, like:
+// Fill interior.
+Brush^ brush = gcnew SolidBrush(Color::FromArgb(191, 1, 0, 0));
+g-&gt;FillPath(brush, innerPath);
+delete brush;
+
+// Get the device context handle from this graphics object and create a Win32 cairo surface from it.
+IntPtr hdc= g-&gt;GetHdc();
+cairo_surface_t* surface= cairo_win32_surface_create((HDC) hdc.ToPointer());
+
+// For drawing we need a cairo context.
+cairo_t* cr= cairo_create(surface);
+
+// Now you are ready to draw to that using any of the cairo calls.
+...
+
+// Don't forget the cleanup.
+cairo_destroy(cr);
+cairo_surface_destroy(surface);
+
+g-&gt;ReleaseHdc(hdc);
+</code></pre>
+
+<p>This works quite well but has one big disadvantage: cairo_ win32_surface_create always returns a 24bit surface. So what if we have a bitmap with an alpha channel (like a png image we loaded and want to add something to it)? With the code above the alpha channel used in your cairo commands is lost.</p>
+
+<p>One could create a 32bit DIB surface (using cairo_win32_surface_create_with_dib), but that creates a <strong>separate</strong> surface, which needs to be merged later to your actual target. Using an API like AlphaBlend (via pinvoke) produces exactly the same result as in the code above. So this is no help either.</p>
+
+<p>The solution for this dilemma is an image surface (e.g. you get an image surface when you load png images in cairo).</p>
+
+<pre><code>// Instead of getting an HDC and and use cairo_win32_surface we get directly
+// to the pixels in the bitmap and create the image surface from that.
+Imaging::BitmapData^ bitmapData= contentBitmap-&gt;LockBits(Drawing::Rectangle(0, 0, Width, Height),
+  Imaging::ImageLockMode::ReadWrite, contentBitmap-&gt;PixelFormat);
+unsigned char* data= (unsigned char*) bitmapData-&gt;Scan0.ToPointer();
+cairo_surface_t* surface= cairo_image_surface_create_for_data(data, CAIRO_FORMAT_ARGB32, Width, Height,
+  bitmapData-&gt;Stride);
+
+// The rest is the same as above, except we have to unlock the bits after we finished drawing.
+contentBitmap-&gt;UnlockBits(bitmapData);
+</code></pre>
+
+
+
+
+
+
+
+<span class="header"><a href="http://cairographics.org/samples/fill_and_stroke2/">fill and stroke2</a></span>
+
+<div class="tutright"><img src="./cairo-samples_files/fill_and_stroke2.png" alt="" width="256" height="256"></div>
+
+<pre><code>cairo_move_to (cr, 128.0, 25.6);
+cairo_line_to (cr, 230.4, 230.4);
+cairo_rel_line_to (cr, -102.4, 0.0);
+cairo_curve_to (cr, 51.2, 230.4, 51.2, 128.0, 128.0, 128.0);
+cairo_close_path (cr);
+
+cairo_move_to (cr, 64.0, 25.6);
+cairo_rel_line_to (cr, 51.2, 51.2);
+cairo_rel_line_to (cr, -51.2, 51.2);
+cairo_rel_line_to (cr, -51.2, -51.2);
+cairo_close_path (cr);
+
+cairo_set_line_width (cr, 10.0);
+cairo_set_source_rgb (cr, 0, 0, 1);
+cairo_fill_preserve (cr);
+cairo_set_source_rgb (cr, 0, 0, 0);
+cairo_stroke (cr);
+</code></pre>
+
+
+
+
+
+
+
+<span class="header"><a href="http://cairographics.org/samples/fill_style/">fill style</a></span>
+
+<div class="tutright"><img src="./cairo-samples_files/fill_style.png" alt="" width="256" height="256"></div>
+
+<pre><code>cairo_set_line_width (cr, 6);
+
+cairo_rectangle (cr, 12, 12, 232, 70);
+cairo_new_sub_path (cr); cairo_arc (cr, 64, 64, 40, 0, 2*M_PI);
+cairo_new_sub_path (cr); cairo_arc_negative (cr, 192, 64, 40, 0, -2*M_PI);
+
+cairo_set_fill_rule (cr, CAIRO_FILL_RULE_EVEN_ODD);
+cairo_set_source_rgb (cr, 0, 0.7, 0); cairo_fill_preserve (cr);
+cairo_set_source_rgb (cr, 0, 0, 0); cairo_stroke (cr);
+
+cairo_translate (cr, 0, 128);
+cairo_rectangle (cr, 12, 12, 232, 70);
+cairo_new_sub_path (cr); cairo_arc (cr, 64, 64, 40, 0, 2*M_PI);
+cairo_new_sub_path (cr); cairo_arc_negative (cr, 192, 64, 40, 0, -2*M_PI);
+
+cairo_set_fill_rule (cr, CAIRO_FILL_RULE_WINDING);
+cairo_set_source_rgb (cr, 0, 0, 0.9); cairo_fill_preserve (cr);
+cairo_set_source_rgb (cr, 0, 0, 0); cairo_stroke (cr);
+</code></pre>
+
+
+
+
+
+
+
+<span class="header"><a href="http://cairographics.org/samples/gradient/">gradient</a></span>
+
+<div class="tutright"><img src="./cairo-samples_files/gradient.png" alt="" width="256" height="256"></div>
+
+<pre><code>cairo_pattern_t *pat;
+
+pat = cairo_pattern_create_linear (0.0, 0.0,  0.0, 256.0);
+cairo_pattern_add_color_stop_rgba (pat, 1, 0, 0, 0, 1);
+cairo_pattern_add_color_stop_rgba (pat, 0, 1, 1, 1, 1);
+cairo_rectangle (cr, 0, 0, 256, 256);
+cairo_set_source (cr, pat);
+cairo_fill (cr);
+cairo_pattern_destroy (pat);
+
+pat = cairo_pattern_create_radial (115.2, 102.4, 25.6,
+                                   102.4,  102.4, 128.0);
+cairo_pattern_add_color_stop_rgba (pat, 0, 1, 1, 1, 1);
+cairo_pattern_add_color_stop_rgba (pat, 1, 0, 0, 0, 1);
+cairo_set_source (cr, pat);
+cairo_arc (cr, 128.0, 128.0, 76.8, 0, 2 * M_PI);
+cairo_fill (cr);
+cairo_pattern_destroy (pat);
+</code></pre>
+
+
+
+
+
+
+
+<span class="header"><a href="http://cairographics.org/samples/image/">image</a></span>
+
+<div class="tutright"><img src="./cairo-samples_files/image.png" alt="" width="256" height="256"></div>
+
+<pre><code>int              w, h;
+cairo_surface_t *image;
+
+image = cairo_image_surface_create_from_png ("data/romedalen.png");
+w = cairo_image_surface_get_width (image);
+h = cairo_image_surface_get_height (image);
+
+cairo_translate (cr, 128.0, 128.0);
+cairo_rotate (cr, 45* M_PI/180);
+cairo_scale  (cr, 256.0/w, 256.0/h);
+cairo_translate (cr, -0.5*w, -0.5*h);
+
+cairo_set_source_surface (cr, image, 0, 0);
+cairo_paint (cr);
+cairo_surface_destroy (image);
+</code></pre>
+
+
+
+
+
+
+
+<span class="header"><a href="http://cairographics.org/samples/imagepattern/">imagepattern</a></span>
+
+<div class="tutright"><img src="./cairo-samples_files/imagepattern.png" alt="" width="256" height="256"></div>
+
+<pre><code>int              w, h;
+cairo_surface_t *image;
+cairo_pattern_t *pattern;
+cairo_matrix_t   matrix;
+
+image = cairo_image_surface_create_from_png ("data/romedalen.png");
+w = cairo_image_surface_get_width (image);
+h = cairo_image_surface_get_height (image);
+
+pattern = cairo_pattern_create_for_surface (image);
+cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
+
+cairo_translate (cr, 128.0, 128.0);
+cairo_rotate (cr, M_PI / 4);
+cairo_scale (cr, 1 / sqrt (2), 1 / sqrt (2));
+cairo_translate (cr, -128.0, -128.0);
+
+cairo_matrix_init_scale (&amp;matrix, w/256.0 * 5.0, h/256.0 * 5.0);
+cairo_pattern_set_matrix (pattern, &amp;matrix);
+
+cairo_set_source (cr, pattern);
+
+cairo_rectangle (cr, 0, 0, 256.0, 256.0);
+cairo_fill (cr);
+
+cairo_pattern_destroy (pattern);
+cairo_surface_destroy (image);
+</code></pre>
+
+
+
+
+
+
+
+<span class="header"><a href="http://cairographics.org/samples/multi_segment_caps/">multi segment caps</a></span>
+
+<div class="tutright"><img src="./cairo-samples_files/multi_segment_caps.png" alt="" width="256" height="256"></div>
+
+<pre><code>cairo_move_to (cr, 50.0, 75.0);
+cairo_line_to (cr, 200.0, 75.0);
+
+cairo_move_to (cr, 50.0, 125.0);
+cairo_line_to (cr, 200.0, 125.0);
+
+cairo_move_to (cr, 50.0, 175.0);
+cairo_line_to (cr, 200.0, 175.0);
+
+cairo_set_line_width (cr, 30.0);
+cairo_set_line_cap (cr, CAIRO_LINE_CAP_ROUND);
+cairo_stroke (cr);
+</code></pre>
+
+
+
+
+
+
+
+<span class="header"><a href="http://cairographics.org/samples/rounded_rectangle/">rounded rectangle</a></span>
+
+<div class="tutright"><img src="./cairo-samples_files/rounded_rectangle.png" alt="" width="256" height="256"></div>
+
+<pre><code>/* a custom shape that could be wrapped in a function */
+double x         = 25.6,        /* parameters like cairo_rectangle */
+       y         = 25.6,
+       width         = 204.8,
+       height        = 204.8,
+       aspect        = 1.0,     /* aspect ratio */
+       corner_radius = height / 10.0;   /* and corner curvature radius */
+
+double radius = corner_radius / aspect;
+double degrees = M_PI / 180.0;
+
+cairo_new_sub_path (cr);
+cairo_arc (cr, x + width - radius, y + radius, radius, -90 * degrees, 0 * degrees);
+cairo_arc (cr, x + width - radius, y + height - radius, radius, 0 * degrees, 90 * degrees);
+cairo_arc (cr, x + radius, y + height - radius, radius, 90 * degrees, 180 * degrees);
+cairo_arc (cr, x + radius, y + radius, radius, 180 * degrees, 270 * degrees);
+cairo_close_path (cr);
+
+cairo_set_source_rgb (cr, 0.5, 0.5, 1);
+cairo_fill_preserve (cr);
+cairo_set_source_rgba (cr, 0.5, 0, 0, 0.5);
+cairo_set_line_width (cr, 10.0);
+cairo_stroke (cr);
+</code></pre>
+
+
+
+
+
+
+
+<span class="header"><a href="http://cairographics.org/samples/set_line_cap/">set line cap</a></span>
+
+<div class="tutright"><img src="./cairo-samples_files/set_line_cap.png" alt="" width="256" height="256"></div>
+
+<pre><code>cairo_set_line_width (cr, 30.0);
+cairo_set_line_cap  (cr, CAIRO_LINE_CAP_BUTT); /* default */
+cairo_move_to (cr, 64.0, 50.0); cairo_line_to (cr, 64.0, 200.0);
+cairo_stroke (cr);
+cairo_set_line_cap  (cr, CAIRO_LINE_CAP_ROUND);
+cairo_move_to (cr, 128.0, 50.0); cairo_line_to (cr, 128.0, 200.0);
+cairo_stroke (cr);
+cairo_set_line_cap  (cr, CAIRO_LINE_CAP_SQUARE);
+cairo_move_to (cr, 192.0, 50.0); cairo_line_to (cr, 192.0, 200.0);
+cairo_stroke (cr);
+
+/* draw helping lines */
+cairo_set_source_rgb (cr, 1, 0.2, 0.2);
+cairo_set_line_width (cr, 2.56);
+cairo_move_to (cr, 64.0, 50.0); cairo_line_to (cr, 64.0, 200.0);
+cairo_move_to (cr, 128.0, 50.0);  cairo_line_to (cr, 128.0, 200.0);
+cairo_move_to (cr, 192.0, 50.0); cairo_line_to (cr, 192.0, 200.0);
+cairo_stroke (cr);
+</code></pre>
+
+
+
+
+
+
+
+<span class="header"><a href="http://cairographics.org/samples/set_line_join/">set line join</a></span>
+
+<div class="tutright"><img src="./cairo-samples_files/set_line_join.png" alt="" width="256" height="256"></div>
+
+<pre><code>cairo_set_line_width (cr, 40.96);
+cairo_move_to (cr, 76.8, 84.48);
+cairo_rel_line_to (cr, 51.2, -51.2);
+cairo_rel_line_to (cr, 51.2, 51.2);
+cairo_set_line_join (cr, CAIRO_LINE_JOIN_MITER); /* default */
+cairo_stroke (cr);
+
+cairo_move_to (cr, 76.8, 161.28);
+cairo_rel_line_to (cr, 51.2, -51.2);
+cairo_rel_line_to (cr, 51.2, 51.2);
+cairo_set_line_join (cr, CAIRO_LINE_JOIN_BEVEL);
+cairo_stroke (cr);
+
+cairo_move_to (cr, 76.8, 238.08);
+cairo_rel_line_to (cr, 51.2, -51.2);
+cairo_rel_line_to (cr, 51.2, 51.2);
+cairo_set_line_join (cr, CAIRO_LINE_JOIN_ROUND);
+cairo_stroke (cr);
+</code></pre>
+
+
+
+
+
+
+
+<span class="header"><a href="http://cairographics.org/samples/text/">text</a></span>
+
+<div class="tutright"><img src="./cairo-samples_files/text.png" alt="" width="256" height="256"></div>
+
+<pre><code>cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL,
+                               CAIRO_FONT_WEIGHT_BOLD);
+cairo_set_font_size (cr, 90.0);
+
+cairo_move_to (cr, 10.0, 135.0);
+cairo_show_text (cr, "Hello");
+
+cairo_move_to (cr, 70.0, 165.0);
+cairo_text_path (cr, "void");
+cairo_set_source_rgb (cr, 0.5, 0.5, 1);
+cairo_fill_preserve (cr);
+cairo_set_source_rgb (cr, 0, 0, 0);
+cairo_set_line_width (cr, 2.56);
+cairo_stroke (cr);
+
+/* draw helping lines */
+cairo_set_source_rgba (cr, 1, 0.2, 0.2, 0.6);
+cairo_arc (cr, 10.0, 135.0, 5.12, 0, 2*M_PI);
+cairo_close_path (cr);
+cairo_arc (cr, 70.0, 165.0, 5.12, 0, 2*M_PI);
+cairo_fill (cr);
+</code></pre>
+
+
+
+
+
+
+
+<span class="header"><a href="http://cairographics.org/samples/text_align_center/">text align center</a></span>
+
+<div class="tutright"><img src="./cairo-samples_files/text_align_center.png" alt="" width="256" height="256"></div>
+
+<pre><code>cairo_text_extents_t extents;
+
+const char *utf8 = "cairo";
+double x,y;
+
+cairo_select_font_face (cr, "Sans",
+    CAIRO_FONT_SLANT_NORMAL,
+    CAIRO_FONT_WEIGHT_NORMAL);
+
+cairo_set_font_size (cr, 52.0);
+cairo_text_extents (cr, utf8, &amp;extents);
+x = 128.0-(extents.width/2 + extents.x_bearing);
+y = 128.0-(extents.height/2 + extents.y_bearing);
+
+cairo_move_to (cr, x, y);
+cairo_show_text (cr, utf8);
+
+/* draw helping lines */
+cairo_set_source_rgba (cr, 1, 0.2, 0.2, 0.6);
+cairo_set_line_width (cr, 6.0);
+cairo_arc (cr, x, y, 10.0, 0, 2*M_PI);
+cairo_fill (cr);
+cairo_move_to (cr, 128.0, 0);
+cairo_rel_line_to (cr, 0, 256);
+cairo_move_to (cr, 0, 128.0);
+cairo_rel_line_to (cr, 256, 0);
+cairo_stroke (cr);
+</code></pre>
+
+
+
+
+
+
+
+<span class="header"><a href="http://cairographics.org/samples/text_extents/">text extents</a></span>
+
+<div class="tutright"><img src="./cairo-samples_files/text_extents.png" alt="" width="256" height="256"></div>
+
+<pre><code>cairo_text_extents_t extents;
+
+const char *utf8 = "cairo";
+double x,y;
+
+cairo_select_font_face (cr, "Sans",
+    CAIRO_FONT_SLANT_NORMAL,
+    CAIRO_FONT_WEIGHT_NORMAL);
+
+cairo_set_font_size (cr, 100.0);
+cairo_text_extents (cr, utf8, &amp;extents);
+
+x=25.0;
+y=150.0;
+
+cairo_move_to (cr, x,y);
+cairo_show_text (cr, utf8);
+
+/* draw helping lines */
+cairo_set_source_rgba (cr, 1, 0.2, 0.2, 0.6);
+cairo_set_line_width (cr, 6.0);
+cairo_arc (cr, x, y, 10.0, 0, 2*M_PI);
+cairo_fill (cr);
+cairo_move_to (cr, x,y);
+cairo_rel_line_to (cr, 0, -extents.height);
+cairo_rel_line_to (cr, extents.width, 0);
+cairo_rel_line_to (cr, extents.x_bearing, -extents.y_bearing);
+cairo_stroke (cr);
+</code></pre>
+
+
+
+
+
+
+
+</div>
+
+<div id="footer">
+
+
+<div class="actions">
+<ul>
+
+<li><a href="http://cairographics.org/ikiwiki?page=samples&do=edit">Edit</a></li>
+
+
+<li><a href="http://cairographics.org/recentchanges/">RecentChanges</a></li>
+
+
+
+<li><a href="http://cairographics.org/ikiwiki?do=prefs">Preferences</a></li>
+
+
+</ul>
+</div>
+
+
+<div id="pageinfo">
+
+
+
+
+<div id="backlinks">
+Links:
+
+<a href="http://cairographics.org/documentation/">documentation</a>
+
+
+</div>
+
+
+<div class="pagedate">
+Last edited <span class="date">Wed Jan  7 16:13:52 2009</span>
+</div>
+
+</div>
+
+<!-- from cairographics.org -->
+</div>
+
+
+
+</body><style type="text/css">embed[type*="application/x-shockwave-flash"],embed[src*=".swf"],object[type*="application/x-shockwave-flash"],object[codetype*="application/x-shockwave-flash"],object[src*=".swf"],object[codebase*="swflash.cab"],object[classid*="D27CDB6E-AE6D-11cf-96B8-444553540000"],object[classid*="d27cdb6e-ae6d-11cf-96b8-444553540000"],object[classid*="D27CDB6E-AE6D-11cf-96B8-444553540000"]{	display: none !important;}</style></html>

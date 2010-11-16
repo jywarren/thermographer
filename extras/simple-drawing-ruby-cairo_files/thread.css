@@ -1,0 +1,1130 @@
+/**
+ * General style rules
+ */
+
+#disqus_thread {
+    margin-bottom: 10px;
+}
+
+.dsq-brlink {
+    font-size: 10px;
+}
+
+.logo-disqus {
+    font-family: Arial, sans-serif;
+    text-transform: uppercase;
+    font-size: 9px;
+    font-weight: bold;
+}
+
+#dsq-content .dsq-alert-message {
+    background-color:#FDF1D0;
+    border:1px solid #FAD163;
+    line-height: 1.25;
+    padding: 5px 8px;
+    color: #817134;
+    margin: 10px 0;
+    clear: left;
+}
+
+#dsq-content .dsq-alert-message a {
+    color: #516361;
+}
+
+#dsq-content .dsq-alert-message.dsq-error {
+    background-color: #FCA09A;
+    border-color: #90040B;
+    color: #341922;
+}
+
+#dsq-content .dsq-alert-message.dsq-error a {
+    color: #000;
+    text-decoration: underline;
+    font-weight: bold;
+    font-size: 115%;
+}
+
+#dsq-content iframe,
+.dsq-popup iframe {
+    border: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    *overflow-x: visible;
+    width: 100%;
+    background-color: transparent;
+    
+    /* Set in thread.js
+
+    width: 0px; (if IE7) */
+}
+
+#dsq-login-iframe-wrapper iframe {
+    height: 340px;
+}
+
+#dsq-content iframe.dsq-post-reply,
+#dsq-popup-alert iframe.dsq-post-reply {
+    height: 300px;
+}
+
+#dsq-content iframe.dsq-post-reply-authenticated,
+#dsq-popup-alert iframe.dsq-post-reply-authenticated {
+    height: 170px;
+}
+
+
+#dsq-content #dsq-comments .dsq-header-avatar .dsq-drop-profile {
+    color: #333;
+    font-size: 11px;
+    font-family: Arial, Helvetica, sans-serif;
+    float: left;
+    left: 0px;
+    position: relative;
+    background: #f0f0f0;
+    z-index: 2;
+    border-left: 1px solid #888;
+    border-right: 1px solid #888;
+    border-bottom: 1px solid #888;
+    -moz-border-radius: 0px 5px 5px 5px;
+    -webkit-border-top-right-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    display: none;
+    min-width: 64px;
+
+    /* IE6 */
+    _position: absolute;
+    _z-index: 9000;
+
+    /* Set in thread.js
+    top: 30px; (if not integration.show_avatar)
+    _top: {{ integration.avatar_size }}px; (if IE6) */
+}
+
+#dsq-content #dsq-comments .dsq-header-avatar img {
+    /* Set in thread.js
+    display: none; (if not integration.show_avatar) */
+}
+
+/**
+ * Popup : Blacklist
+ */
+.dsq-popup .dsq-blacklist-option {
+    padding: 5px 10px;
+    border-bottom: 1px dotted #E5EBED;
+}
+
+
+/**
+ * Popup : Help
+ */
+.dsq-popup ul.dsq-popup-help {
+    margin: 0 10px;
+}
+
+#dsq-popup-message.dsq-popup ul.dsq-popup-help li {
+    margin: 0 0 15px 0;
+    padding: 0 0 10px 0;
+    border-bottom: 1px dotted #E5EBED;
+}
+
+.dsq-popup ul.dsq-popup-help li.dsq-help-otheraccts {
+    font-weight: bold;
+    font-size: 110%;
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+}
+
+#dsq-popup-message ul.dsq-list-tick li {
+    list-style: none inside url("../../images/tick.png") !important;
+    display: list-item;
+}
+
+#dsq-popup-message ul.dsq-list-bluebullet li {
+    list-style: none inside url("../../images/bullet_blue.png");
+    display: list-item;
+}
+
+#dsq-popup-message li {
+    margin: 10px 0;
+    padding: 0 10px;
+    border-bottom: 1px dotted #E5EBED;
+}
+
+#dsq-popup-message li li {
+    padding-left: 10px;
+}
+
+
+/**
+ * Popup : Login
+ */
+.dsq-popup iframe#dsq-popup-login {
+    margin-top: 10px;
+    height:310px;
+    width: 100%;
+}
+
+.dsq-popup-login .dsq-popup-content {
+    width: 420px;
+}
+
+
+/**
+ * Popup : Remote Account Settings
+ */
+.dsq-popup iframe#dsq-popup-account-settings {
+    width: 100%;
+    height: 400px;
+}
+
+.dsq-popup-account-settings .dsq-popup-content {
+    width: 500px;
+}
+
+
+/**
+ * Popup : Lightbox : Authenticate
+ */
+.dsq-lightbox .dsq-popup-content {
+    width: 550px;
+}
+
+.dsq-lightbox .powered-by {
+    display: none;
+}
+
+.dsq-lightbox img {
+    border: 0 !important;
+    height: auto !important;
+    width: auto !important;
+}
+
+.dsq-lightbox .dsq-lightbox-register-reasons {
+    padding: 0 10px !important;
+}
+
+.dsq-lightbox .dsq-lightbox-register-reasons li {
+    background: url("../../images/small-tick.png") no-repeat;
+    padding-left: 12px !important;
+    margin: 0 0 0 6px !important;
+    display: inline !important;
+    font-size: 11px !important;
+    color: #555;
+}
+
+.dsq-lightbox .dsq-lightbox-register-reasons li img {
+    margin-bottom: -1px !important;
+}
+
+.dsq-lightbox .dsq-lightbox-submit {
+    _height: 1%;
+    overflow: auto;
+    padding: 0 5px;
+    margin-top: 20px;
+}
+
+.dsq-lightbox .dsq-lightbox-auth-post {
+    float: right;
+    padding: 4px;
+    background-color: #EAFFCD;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -webkit-border-radisu: 4px;
+}
+
+.dsq-lightbox .dsq-lightbox-auth-skip {
+    float: left;
+    margin-top: 5px;
+    padding: 2px;
+}
+
+.dsq-lightbox .dsq-lightbox-switch-auth {
+    width: 400px;
+    font-size: 11px;
+    text-align: right;
+    margin: 0 auto;
+}
+
+.dsq-lightbox .dsq-lightbox-auth-fields table {
+    padding: 8px;
+    background-color: #EDFFC9;
+    border: 1px solid #A5C469;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    width: 400px;
+    margin: 10px auto;
+}
+
+.dsq-lightbox .dsq-lightbox-auth-fields table td {
+    padding: 4px;
+}
+
+.dsq-lightbox .errorlist {
+    color: #c03000 !important;
+    font-size: 11px;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+}
+
+.dsq-lightbox .errorlist li {
+    margin: 5px 0 !important;
+    padding: 0 !important;
+}
+
+.dsq-lightbox-errors p {
+    color: #c03000 !important;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.dsq-lightbox .dsq-lightbox-auth-fields table td input {
+    font-size: 13px;
+    padding: 2px;
+}
+
+.dsq-lightbox-recognized table {
+    width: 400px;
+    margin: 10px auto;
+}
+
+.dsq-lightbox-recognized table td {
+    padding: 4px;
+}
+
+/**
+ * Menu
+ */
+
+.dsq-menu {
+    margin: 0 !important;
+    left: 0px;
+    position: absolute;
+    _position: absolute;
+    _left:;
+    background: #f0f0f0 !important;
+    z-index: 2 !important;
+    border-width: 1px !important;
+    border-color: #888 !important;
+    border-style: solid !important;
+    -moz-border-radius: 0px 0px 4px 4px;
+    -webkit-border-bottom-right-radius: 4px;
+    -webkit-border-bottom-left-radius: 4px;
+    display: inline;
+    padding: 5px 10px 5px 0 !important;
+    list-style: none !important;
+}
+
+.dsq-menu li {
+    margin: 0 !important;
+    padding: 0 !important;
+    clear: both;
+    line-height: 1.3em !important;
+    font-size: 12px !important;
+    margin-bottom: 2px !important;
+    margin-left: 4px !important;
+    white-space: nowrap !important;
+    list-style: none !important;
+    float: none;
+    background: none;
+    text-align: left;
+}
+
+.dsq-menu li:before {
+    content: "";
+}
+
+.dsq-menu li a.dsq-admin-toggle {
+    font-weight: bold;
+}
+
+.dsq-menu li.dsq-admin-email,
+.dsq-menu li.dsq-admin-ip {
+    color: #555;
+    font-style: italic;
+    cursor: default;
+}
+
+.dsq-menu li.dsq-menu-sep {
+    border-bottom: 1px dotted #aaa;
+    font-size: 1pt !important;
+}
+
+.dsq-menu li a{
+    text-decoration: none;
+    color: #333;
+}
+
+.dsq-menu li a:hover {
+    color: #869AAD;
+}
+
+
+/**
+ * Media embed
+ */
+
+.dsq-popup.dsq-media-embed img {
+    max-width: 500px;
+    max-height: 500px;
+}
+
+#dsq-content .dsq-media-embed h4 {
+    margin-top: 10px;
+    background: transparent url('../../images/themes/narcissus/gray-50.png') repeat-x scroll center top;
+    text-transform: uppercase;
+    font-weight: normal;
+    font-size: 9px;
+    font-family: Arial, sans-serif;
+    letter-spacing: 1px;
+    -moz-opacity: 0.6;
+    opacity:.60;
+    filter: alpha(opacity=60);
+}
+
+#dsq-content .dsq-media-embed a {
+    margin-right: 5px;
+}
+
+
+/**
+ * Drop profile
+ */
+
+#dsq-content #dsq-comments .dsq-header-avatar:hover .dsq-drop-profile {
+    display: inline;
+}
+
+#dsq-content #dsq-comments .dsq-drop-profile li {
+    float: none;
+    clear: both;
+    line-height: 1.3em;
+    padding: 2px 4px;
+    white-space: nowrap;
+    margin: 0px;
+}
+
+#dsq-content #dsq-comments .dsq-drop-profile li img {
+    float: none;
+    height: 12px;
+    width: 12px;
+    margin: 0px 4px 0px 0;
+    vertical-align: middle;
+    padding: 0px;
+}
+
+#dsq-content #dsq-comments .dsq-drop-profile li a {
+    color: #1C5392;
+    vertical-align: middle;
+}
+
+#dsq-content #dsq-comments .dsq-drop-profile li a:hover {
+    font-weight: bold;
+}
+
+
+#dsq-content #dsq-comments .dsq-drop-profile li.dsq-drop-services {
+    height: 16px;
+    padding: 4px 4px;
+}
+
+#dsq-content #dsq-comments .dsq-drop-profile li.dsq-drop-services:hover {
+    background-color: #ddd;
+    outline-top: 1px solid #ccc;
+    outline-bottom: 1px solid #ccc;
+}
+
+#dsq-content #dsq-comments .dsq-drop-profile li.dsq-drop-services a {
+    display: block;
+    width: 100%;
+    height: 16px;
+}
+
+#dsq-content #dsq-comments .dsq-drop-profile li.dsq-drop-sep {
+    border-bottom: 1px dotted #aaa;
+}
+
+
+#dsq-content #dsq-comments .dsq-drop-profile li.dsq-drop-showlnk {
+    padding: 4px 2px;
+    border-bottom: 1px solid #ccc;
+    text-align: center;
+    height: 16px;
+    -moz-border-radius: 0px 5px 0px 0px;
+    -webkit-border-top-right-radius: 5px;
+}
+
+#dsq-content #dsq-comments .dsq-drop-profile li.dsq-drop-showlnk a {
+    font-weight: bold;
+    font-size: 95%;
+    display: block;
+    width: 100%;
+    height: 16px;
+}
+
+
+#dsq-content #dsq-comments .dsq-drop-profile li.dsq-drop-badge {
+    padding: 6px 2px;
+    text-align: center;
+    font-size: 95%;
+    cursor: help;
+    border-bottom: 1px solid #ddd;
+}
+
+#dsq-content #dsq-comments .dsq-drop-profile li.dsq-drop-badge span {
+    padding: 1px 3px;
+}
+
+#dsq-content #dsq-comments .dsq-drop-profile li.dsq-drop-more {
+    height:16px;
+    background: url("../../images/drop-more.gif");
+    background-position: 0px 0px;
+    background-repeat: repeat-x;
+    background-color: #fff;
+    text-align: center;
+    border-top: 1px solid #ddd;
+    -moz-border-radius: 0px 0px 5px 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+}
+
+#dsq-content #dsq-comments .dsq-drop-profile li.dsq-drop-more:hover {
+    background-position: 0px -20px;
+    border-top: 1px solid #ccc;
+}
+
+#dsq-content #dsq-comments .dsq-drop-profile li.dsq-drop-more a {
+    font-size: 95%;
+    height: 16px;
+    width: 100%;
+    display: block;
+}
+
+
+#dsq-content #dsq-comments .dsq-drop-profile li.dsq-drop-hidden {
+    display: none;
+    padding: 0;
+}
+
+
+/*
+ * Pagination
+ */
+
+#dsq-content .dsq-paginate-append-text { display: none; }
+#dsq-content .dsq-paginate-all-button { display: none; }
+#dsq-content .dsq-paginate-append-button { display: inline; }
+
+/* Extras */
+
+#dsq-content .dsq-global-moderator-extras {
+    font-size: 11px;
+}
+
+#dsq-content .dsq-global-moderator-extras strong:first-child {
+    margin-left: 0;
+}
+
+#dsq-content .dsq-global-moderator-extras strong {
+    margin-left: 10px;
+}
+
+
+/* Moderate options */
+
+.dsq-moderate-options table {
+    background-color: #E5EBED;
+    padding: 10px;
+    width: 400px;
+    margin: 10px auto;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+
+.dsq-moderate-options table td {
+    padding: 4px;
+}
+
+.dsq-moderate-options table ul {
+    margin: 0;
+    padding: 0;
+}
+
+.dsq-moderate-options table li {
+    margin-bottom: 5px;
+}
+
+table.dsq-moderator-settings td {
+    vertical-align: top;
+    border-bottom: solid 1px #fff;
+    padding: 10px 6px;
+}
+
+table.dsq-moderator-settings td.last {
+    border-bottom: none;
+}
+
+table.dsq-moderator-settings td p.dsq-form-actions {
+    text-align: right;
+    margin-top: 5px;
+}
+
+span.dsq-options-status {
+    margin-left: 10px;
+    color: #799c42;
+}
+
+#dsq-popup-message ul.dsq-thread-help {
+    margin: 0;
+    padding: 0;
+}
+
+#dsq-popup-message ul.dsq-thread-help li {
+    margin: 10px 0;
+    padding: 0;
+    list-style: disc inside;
+    display: list-item;
+}
+
+#dsq-popup-message ul.dsq-thread-help li p {
+    font-size: 11px;
+    color: #555;
+    padding-left: 5px;
+}
+
+/* Thread settings */
+#dsq-content .dsq-thread-settings {
+    clear: left;
+    background: transparent url('../../images/themes/narcissus/header-grey.png');
+    border: solid 1px #999;
+    margin-bottom: 1em;
+    padding:6px 10px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+}
+
+#dsq-content .dsq-thread-settings a {
+    margin-right: 10px;
+}
+
+/* Share toggle buttons */
+
+#dsq-content button.dsq-share-toggle {
+    border: 0;
+    background: none;
+    font-size: 12px;
+    color: #333;
+    vertical-align: middle;
+    position: relative;
+    cursor: pointer;
+    padding: 0;
+    margin: 0 5px 0 0;
+}
+
+#dsq-content button.dsq-share-toggle span.dsq-share-icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    vertical-align: text-bottom;
+}
+
+#dsq-content button.dsq-share-toggle span.dsq-share-status {
+    display:block;
+    width: 9px;
+    height: 9px;
+    position: absolute;
+    top: -3px;
+    font-size: 1%;
+    
+}
+
+#dsq-content button.dsq-share-toggle.dsq-share-toggled span.dsq-share-status {
+    display:block;
+    width: 9px;
+    height: 9px;
+    position: absolute;
+    right: -1px;
+    top: -3px;
+    background: url(../../images/themes/narcissus/share-status.png) 0 -9px;
+}
+
+#dsq-content #dsq-share-twitter.dsq-share-toggled, #dsq-content #dsq-share-facebook.dsq-share-toggled {
+
+    color: #fff;
+    text-shadow: 0 1px 0 #2E619D;
+}
+
+#dsq-content button.dsq-share-toggle span.checkbox {
+    display: inline-block;
+}
+
+#dsq-content #dsq-share-twitter span.dsq-share-icon {
+    background: url(../../images/social-icons/twitter_muted.png);
+}
+
+#dsq-content #dsq-share-facebook span.dsq-share-icon {
+    background: url(../../images/social-icons/facebook_muted.png);
+}
+
+#dsq-content #dsq-share-twitter.dsq-share-toggled span.dsq-share-icon {
+    background: url(../../images/social-icons/twitter.png);
+}
+
+#dsq-content #dsq-share-facebook.dsq-share-toggled span.dsq-share-icon {
+    background: url(../../images/social-icons/facebook.png);
+}
+
+.dsq-auth-form h3 {
+    font-size: 16px !important;
+    margin: 0 0 16px !important;
+    font-weight: bold !important;
+}
+
+.dsq-auth-form p {
+    margin: 0 0 18px 0 !important;
+}
+
+.dsq-auth-form label {
+    display: block !important;
+    font-weight: bold !important;
+    margin: 0 0 5px !important;
+}
+
+.dsq-auth-form .dsq-login-input-wrapper {
+    display: inline-block;
+    background: #eee;
+    padding: 3px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    
+}
+
+.dsq-auth-form .dsq-login-input-wrapper input {
+    padding: 6px !important;
+    font-size: 22px !important;
+    border: 1px solid #bbb !important;
+    width: 268px !important;
+    color: #aaa !important;
+    -webkit-border-radius: 2px !important;
+    -moz-border-radius: 2px !important;
+    line-height: 28px !important;
+}
+
+.dsq-auth-form .dsq-login-input-wrapper input:focus {
+    border: 1px solid #666 !important;
+    -moz-box-shadow: 0 0 5px #0099FF !important;
+    -webkit-box-shadow: 0 0 5px #0099FF !important;
+    box-shadow: 0 0 4px #0099FF !important;
+}
+
+
+.dsq-auth-form .dsq-optional-fields {
+    display: none !important;
+}
+
+.dsq-auth-form .dsq-login-subscribe {
+    font-size: 12px !important;
+    vertical-align: middle !important;
+}
+
+.dsq-auth-form .dsq-login-subscribe p {
+    padding: 0 !important;
+}
+
+.dsq-popup .dsq-tab-container .dsq-login-subscribe span {
+    margin: 0 5px 0 0 !important;
+}
+
+.dsq-popup .dsq-tab-container .dsq-login-subscribe label {
+    display: inline !important;
+    font-weight: normal !important;
+}
+
+.dsq-popup .dsq-tab-container input.blur {
+    color: #aaa !important;
+}
+
+.dsq-popup .dsq-tab-container #guest .group {
+    border: 0 !important;
+    margin: 0 0 18px !important;
+}
+
+.dsq-popup .dsq-tab-container #guest .group p {
+    float: left !important;
+    margin: 0 8px 0 0 !important;
+}
+
+.dsq-popup .dsq-tab-container #guest .group p input {
+    width: 124px !important;
+    font-size: 14px !important;
+    height: 16px !important;
+}
+
+.dsq-popup .dsq-login-add-url {
+    font-size: .8em !important;
+    opacity: .6 !important;
+}
+
+.dsq-popup .dsq-tab-container .copy {
+    -moz-border-radius:5px 5px 5px 5px !important;
+    -webkit-border-radius: 5px !important;
+    background-color:#E8F0F7 !important;
+    border:1px solid #CDD6DD !important;
+    border-top: 0 !important;
+    padding:5px !important;
+}
+
+/* Facebook / Twitter Connect / Yahoo / Disqus signin buttons */
+
+.dsq-popup span.dsq-external-launcher {
+    display: block;
+    width: 150px;
+    height: 22px;
+}
+
+.dsq-popup span.dsq-facebook-connect {
+    background: url("../../images/embed/facebook_signin.png");
+}
+.dsq-popup span.dsq-twitter-connect {
+    background: url("../../images/embed/twitter_signin.png");
+}
+.dsq-popup span.dsq-yahoo-connect {
+    background: url("../../images/embed/yahoo_signin.png");
+}
+.dsq-popup span.dsq-disqus-connect {
+    background: url("../../images/embed/disqus_signin.png");
+}
+
+.dsq-popup span.dsq-external-launcher:hover {
+    background-position: 0 - 24px;
+}
+.dsq-popup span.dsq-external-launcher:active {
+    background-position: 0 - 48px;
+}
+
+.dsq-connect-msg, .dsq-remote-authentication {
+    height: 200px;
+}
+
+/* Remote Auth loader */
+
+.dsq-remote-authentication {
+
+}
+
+.dsq-remote-authentication img {
+    width: 32px !important;
+    height: 32px !important;
+    margin: 0 auto 20px auto !important;
+    display: block !important;
+}
+
+.dsq-remote-authentication p {
+    text-align: center !important;
+}
+
+.dsq-popup-login #dsq-login-iframe-wrapper iframe {
+    height: 355px !important;
+}
+
+.dsq-error {
+    color: #c03000 !important;
+}
+
+/* Global Toolbar */
+#dsq-content #dsq-global-toolbar {
+    margin: 1em 0;
+}
+
+#dsq-content #dsq-global-toolbar table {
+    width: 100%;
+}
+
+#dsq-content #dsq-global-toolbar table td {
+    vertical-align: top;
+}
+
+
+#dsq-content .dsq-global-toolbar-likes {
+    width: 100%;
+    overflow: hidden;
+}
+
+#dsq-content .dsq-global-toolbar-likes a {
+    float: left
+}
+
+#dsq-content .dsq-global-toolbar-likes p {
+    float: left;
+    margin: 3px 0 0;
+}
+
+#dsq-content #dsq-global-toolbar .toolbar-item {
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    margin: 0 3px 0 0;
+    text-indent: -9999em;
+    height: 22px;
+    display: block;
+    border: 1px solid #707070;
+    border: 1px solid rgba(0,0,0,.20);
+}
+
+#dsq-content #dsq-toolbar-dropdown {
+    position: relative;
+}
+
+#dsq-content #dsq-toolbar-dropdown #dsq-toolbar-dropdown-wrap {
+    position: absolute;
+    right: 0;
+    top: 27px;
+    background: #000;
+    width: 90px;
+    color: #fff;
+    background: url(../../images/toolbar/toolbar-dropdown.png);
+    -moz-border-radius: 3px 0 3px 3px;
+    -webkit-border-radius: 3px 0 3px 3px;
+    padding: 6px;
+    border: 1px solid rgba(0,0,0,.20);
+    border-top: none;
+}
+
+#dsq-content #dsq-toolbar-dropdown:hover #dsq-toolbar-dropdown-wrap {
+    display: block !important;
+}
+
+#dsq-content #dsq-toolbar-dropdown #dsq-toolbar-dropdown-wrap a {
+    color: #eee !important;
+}
+    #dsq-content #dsq-toolbar-dropdown #dsq-toolbar-dropdown-wrap a:hover {
+        color: #fff !important;
+    }
+
+#dsq-content #dsq-toolbar-dropdown #dsq-toolbar-dropdown-wrap ul li h4 {
+    margin: 0 0 8px;
+    padding: 0;
+}
+
+#dsq-content #dsq-toolbar-dropdown .dsq-login-buttons {
+    margin: 0;
+    padding: 0;
+}
+
+#dsq-content #dsq-toolbar-dropdown .dsq-login-buttons li {
+    margin: 0 0 3px;
+    padding: 0;
+}
+
+#dsq-content #dsq-global-toolbar.dsq-community-preview .dsq-toolbar-logo {
+    width: 73px;
+    background: url(../../images/toolbar/toolbar-sprite.png) -123px 0;
+    margin: 0 0 3px 0;
+}
+
+#dsq-global-toolbar.dsq-community-preview #dsq-toolbar-dropdown:hover .dsq-toolbar-logo {
+    background: url(../../images/toolbar/toolbar-sprite.png) -123px -22px;
+    -moz-border-radius: 3px 3px 0 0;
+    -webkit-border-radius: 3px 3px 0 0;
+    height: 26px;
+    margin: 0;
+    border-bottom: 0;
+}
+
+#dsq-content #dsq-global-toolbar .dsq-thread-like {
+    width: 54px;
+    background: url(../../images/toolbar/toolbar-sprite.png);
+}
+    #dsq-content #dsq-global-toolbar #dsq-like-thread-button:hover  {
+        background: url(../../images/toolbar/toolbar-sprite.png) 0 -22px !important;
+    }
+
+    #dsq-content #dsq-global-toolbar #dsq-like-thread-button.dsq-toggled  {
+        background: url(../../images/toolbar/toolbar-sprite.png) 0 -44px !important;
+    }
+
+#dsq-content #dsq-global-toolbar .dsq-thread-dislike {
+    width: 23px;
+    background: url(../../images/toolbar/toolbar-sprite.png) -54px 0;
+    margin:0 0.75em 0 0;
+}
+
+    #dsq-content #dsq-global-toolbar #dsq-dislike-thread-button:hover {
+        background: url(../../images/toolbar/toolbar-sprite.png) -54px -22px;
+    }
+
+    #dsq-content #dsq-global-toolbar #dsq-dislike-thread-button.dsq-toggled {
+        background: url(../../images/toolbar/toolbar-sprite.png) -54px -44px;
+    }
+
+#dsq-content #dsq-global-toolbar .dsq-admin-settings {
+    width: 23px;
+    background: url(../../images/toolbar/toolbar-sprite.png) -100px 0;
+}
+
+    #dsq-content #dsq-global-toolbar .dsq-admin-settings:hover {
+        width: 23px;
+        background: url(../../images/toolbar/toolbar-sprite.png) -100px -22px;
+    }
+
+    #dsq-content #dsq-global-toolbar a.dsq-admin-settings:active {
+        background: url(../../images/toolbar/toolbar-sprite.png) -100px -22px;
+    }
+    
+#dsq-content #dsq-global-toolbar .dsq-community-launcher {
+    width: 23px;
+    background: url(../../images/toolbar/toolbar-sprite.png) -77px 0;
+}
+
+    #dsq-content #dsq-global-toolbar .dsq-community-launcher:hover {
+        width: 23px;
+        background: url(../../images/toolbar/toolbar-sprite.png) -77px -22px;
+    }
+
+    #dsq-content #dsq-global-toolbar a.dsq-community-launcher:active {
+        background: url(../../images/toolbar/toolbar-sprite.png) -77px -22px;
+    }
+
+
+
+#dsq-content .dsq-global-toolbar-likes .dsq-group {
+    float: left;
+    margin: 0 0 5px 0;
+}
+
+/* Like Faces */
+
+#dsq-content .dsq-like-faces {
+    overflow: hidden;
+    float: left;
+}
+
+#dsq-content .dsq-like-faces li {
+    float: left;
+    margin: 0 5px 5px 0;
+}
+
+#dsq-content .dsq-like-faces li img {
+    width: 22px;
+    height: 22px;
+    border: 1px solid #666;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+}
+
+#dsq-content .dsq-like-faces li a {
+    float: none;
+}
+
+#dsq-content .dsq-like-activity {
+    padding: 3px 0 0;
+    white-space: nowrap;
+}
+
+/* Login Dropdown */
+
+#dsq-content #dsq-logo-dropdown {
+    position: relative;
+    display: inline-block;
+    margin-top: 3px
+}
+
+#dsq-content #dsq-logo-dropdown .dsq-logo {
+    display: block;
+    float: left;
+    font-size: 1%;
+    margin-top: 2px;
+}
+.dsq-community-preview #dsq-logo-dropdown .dsq-logo {
+    width: 65px;
+    height: 13px;
+    background: url(../../images/toolbar/toolbar-sprite.png) 0 -102px;
+}
+
+.dsq-community-preview #dsq-logo-dropdown:hover .dsq-logo {
+    background: url(../../images/toolbar/toolbar-sprite.png) 0 -115px;
+}
+
+#dsq-content #dsq-logo-dropdown a.dsq-dropdown-arrow {
+    display: block;
+    width: 16px;
+    height: 22px;
+    background: url(../../images/themes/narcissus/dsq-login-dropdown-icon.png) center center no-repeat;
+    text-indent: -9999em;
+    position: relative;
+    z-index: 2;
+    -moz-border-radius: 3px 3px 0 0;
+    -webkit-border-radius: 3px 0 0;
+    border-radius: 3px 3px 0 0;
+    vertical-align: middle;
+    float: left;
+    margin: -2px 1px 1px;
+}
+
+#dsq-content #dsq-logo-dropdown:hover a.dsq-dropdown-arrow,
+#dsq-content #dsq-logo-dropdown a.dsq-dropdown-arrow.dsq-visible {
+    border: 1px solid #999;
+    border-bottom: 1px solid #fff;
+    background: rgba(255, 255, 255, 1) url(../../images/themes/narcissus/dsq-login-dropdown-icon.png) center center no-repeat;
+    -moz-border-radius-bottomleft: 0;
+    -moz-border-radius-bottomright: 0;
+    display: block;
+    float: left;
+    margin: -3px 0 0;
+}
+
+#dsq-content #dsq-logo-dropdown ul.dsq-dropdown-menu {
+    position: relative;
+    display: none;
+    color: #333;
+    margin-top: 3px;
+    background: #fff;
+    z-index: 200;
+}
+
+#dsq-content #dsq-logo-dropdown:hover ul.dsq-dropdown-menu,
+#dsq-content #dsq-logo-dropdown ul.dsq-dropdown-menu.dsq-visible {
+    display: block !important;
+    position: absolute;
+    right: 0;
+    top: 17px;
+    background: #fff;
+    border: 1px solid #999;
+    z-index: 1;
+    padding: 12px;
+    -moz-box-shadow: 0 1px 4px #ccc;
+    -webkit-box-shadow: 0 1px 4px #ccc;
+    -moz-border-radius: 5px 0 5px 5px;
+    -webkit-border-radius: 5px 0 5px 5px;
+    border-radius: 5px 0 5px 5px;
+}
+
+#dsq-content #dsq-logo-dropdown ul li {
+    display: block;
+    float: none;
+    width: 89px;
+    margin-bottom: 3px;
+}
+
+#dsq-content #dsq-logo-dropdown ul.dsq-dropdown-menu h4 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px !important;
+    text-transform: none !important;
+    font-weight: bold !important;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+}
+
+/* --------------------------- Captcha -------------------------------------------*/
+
+#dsq-captcha p {
+    margin: 0 0 10px !important;
+}
+
+#dsq-captcha button {
+    margin: 10px 0 0;
+}
+

@@ -1,0 +1,23 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  id: 1
+  name: MyString
+  author: MyString
+  description: MyText
+  version: 1
+  data: MyText
+  width: 1
+  height: 1
+  composite: MyString
+
+two:
+  id: 1
+  name: MyString
+  author: MyString
+  description: MyText
+  version: 1
+  data: MyText
+  width: 1
+  height: 1
+  composite: MyString

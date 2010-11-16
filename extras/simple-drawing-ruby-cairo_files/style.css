@@ -1,0 +1,249 @@
+
+h1,h2 { text-shadow: 2px 2px 2px #888888; }
+
+blockquote { border-left: 1px solid blue; padding-left: 5px; }
+
+.contents { padding-top: 20px; }
+
+#fakecaptcha { display: none; }
+
+.stumblers { border: 2px dashed black; margin: 20px; }
+.stumblers h1 { color: red; font-size: 24px; }
+.stumblers img { float: left; margin-left: 20px; margin-top: 50px; }
+.stumblecontent .feedbox { margin-left: 50px; }
+.stumblecontent { margin: 20px; margin-left: 180px; }
+
+/* Syntax  - CSS from http://wiki2go.nayima.be/Wiki2Go/RubySyntaxHighlighting.html */
+
+pre {
+ white-space: pre-wrap;       /* css-3 */
+ white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+ white-space: -pre-wrap;      /* Opera 4-6 */
+ white-space: -o-pre-wrap;    /* Opera 7 */
+ word-wrap: break-word;       /* Internet Explorer 5.5+ */
+ width: 600px;
+}
+
+pre { background: #111133; padding: 10px; color: #228822;  }
+
+pre.grammar { background: #ffffff; color: 666666; }
+
+.ruby .normal { color: #fff; }
+.ruby .comment { color: #840; font-style: italic; }
+.ruby .keyword { color: #A44; font-weight: bold; }
+.ruby .method { color: #44f; }
+.ruby .class { color: #0c4; }
+.ruby .module { color: #050; }
+.ruby .punct { color: #668; font-weight: bold; }
+.ruby .symbol { color: #ff0; }
+.ruby .string { color: #4f4; }
+.ruby .char { color: #F07; }
+.ruby .ident { color: #fff; }
+.ruby .constant { color: #0c4; }
+.ruby .regex { color: #B66; background: #FEF; }
+.ruby .number { color: #F99; }
+.ruby .attribute { color: #fc4; }
+.ruby .global { color: #7FB; }
+.ruby .expr { color: #227; }
+.ruby .escape { color: #277; }
+
+.asm .directive { color: purple; }
+.asm .comma     { color: white; }
+.asm .paren     { color: white; }
+.asm .value     { color: white; }
+.asm .number    { color: yellow; }
+.asm .label     { color: blue; }
+.asm .register  { color: brown; }
+.asm .operator  { color: lightgrey; }
+.asm .quoted    { color: green; }
+
+/* Feedbox */
+
+.feedbox              { list-style: none; margin: 2px; padding: 0px;}
+.feedbox li           { margin-bottom: 1px; font-size: 12px; }
+.feedbox { padding-right: 3px; }
+.feedbox .title { margin-left: 43px; font-size: 12px; display: block; }
+.feedbox .time  { display: block; font-size: 9px; font-weight: bold; width: 40px; font-weight: bold; padding-right: 3px; display: block; float: left; align: top;}
+
+/* Twitter */
+#twitter_update_list li { padding-bottom: 3px; border-bottom: 1px dotted #cccccc; }
+
+/* Stumbleupon Feedbox */
+.stumbleupon .about   { font-size: 10px; margin-right: 8px; margin-bottom: 3px; margin-top: -5px; float: right; }
+.stumbleupon h1       { margin-top: 5px; text-align: top; margin-left: 5px; font-size: 12px; font-weight: bold;  }
+.stumbleupon h1 a img { position: relative; top: 0px; border: 1px blue outset; margin-right: 10px; }
+
+/* Recent posts */
+
+.box h1 { font-size: 14px; font-weight: bold; }
+
+/* Comments */
+
+.comments h2 { margin-left: 220px; }
+.comment { 
+	clear: both; height: auto;  
+}
+.comment .content { border-top: 1px dashed #cccccc; margin-top: 20px; }
+
+.comment div     { 
+	background: none;
+	clear: both;
+	font-size: 11px; 
+	width: 180px; 
+	float: left; 
+	margin-left: -20px; 
+	padding: 1px; 
+	text-align: right;
+    height: 14px;
+	}
+
+.comment .date { margin-top: 20px; }
+.comment .gravatar { height: 40px; }
+.comment .name { font-weight: bold; }
+.comment img { float: right; }
+
+.comment .content { 
+	height: auto;
+	position: relative;
+	float: left; 
+	width: 70%;
+	text-align: left;
+	margin-top: -72px; 
+	margin-bottom: 20px; 
+	margin-left: 180px; 
+	font-size: 11px;
+	}
+
+.comment br { clear: both; }
+
+h2.message { margin-left: 100px; font-size: 16px; color: red; }
+
+.commentform h2 { 
+	margin-left: 100px; 
+	clear: both;
+	margin-top: 20px;
+}
+
+.commentform .help {
+	margin-left: 100px;
+	margin-bottom: 20px;
+}
+
+#postcomment label { 
+	float: left; 
+	text-align: right; 
+	width: 150px; 
+	margin-left: 50px; 
+	font-size: 11px;
+	}
+#postcomment input { float: left; margin-left: 20px; }
+#postcomment textarea { 
+	width: 400px;
+	height: 200px; 
+	float: left; 
+	margin-left: 20px; 
+	}
+#postcomment div { clear: both; }
+#postcomment .submit { margin-left: 220px; width: 100px; margin-top: 20px;}
+
+#postcomment { margin-bottom: 100px; }
+
+/* Feed flare */
+div.flares {
+font-Lucida , Verdana, Arial, Sans-Serif;
+background: white;
+font-size: 10px;
+padding: 3px;
+}
+
+.feedburner { float: left; margin-left: 10px; }
+.dzone { float: left; margin-left: 10px; padding: 8px; }
+
+p.feedburnerFlareBlock a {
+color: #444444;
+background-color:#fff;
+}
+
+/* Entries */
+.shortentries { list-style: none; clear: both; margin-bottom: 50px; }
+.shortentries h2 { margin-left: 50px; }
+.shortentry { display: block; margin-left: 30px; width: auto;}
+.shortentry .date { background: none; padding-right: 10px; }
+
+.entries { }
+.entry { margin-top: 0px; float: left; margin-left: 30px; top: 0px;
+	margin-right: 30px; margin-bottom: 80px; }
+.tags { font-size: 12px; margin-bottom: 15px; margin-top: 0px; margin-left: 10px; }
+.tags .lead { font-weight: bold; }
+.tags a { text-decoration: none; }
+.tags a:hover { text-decoration: underline; }
+
+.tagcloud { padding-bottom: 20px; display: block; }
+.tag a { text-decoration: none; }
+.tag a:hover { text-decoration: underline; }
+.tag_0 { font-size: 8px }
+.tag_1 { font-size: 10px }
+.tag_2 { font-size: 12px }
+.tag_3 { font-size: 14px }
+.tag_4 { font-size: 16px }
+.tag_5 { font-size: 18px }
+.tag_6 { font-size: 20px }
+
+.summary { font-size: 12px;  text-align: justify; }
+.summary h2 { padding-top: 20px }
+.summary h3 { padding-top: 20px }
+
+.content { margin-top: 20px; }
+.readmore { margin-top: 20px; margin-bottom: 20px; text-align: right; }
+.date  { 
+	background: #444488 url(/static/images/date.png) no-repeat; 
+	margin-bottom: 0px;
+	margin-left: 10px;
+	padding-top: 3px;
+	padding-bottom: 2px;
+	padding-left: 10px;
+	padding-right: 10px;
+	color: #6666ff; 	
+	font-weight: normal;	
+	font-size: 12px;
+	}
+
+.entry h2 a { color: #4444cc; top: 2px; position: relative; text-decoration: none; font-size: 18px; padding-left: 5px; }
+.entry h2 a:hover { text-decoration: underline; }
+
+/* Admin stuff */
+.editlink 	  { float: right;  right: 0px; top: 0px; 
+				background: #cccccc; color: black; 
+				font-size: 12; border: 1px solid black; z-index: 100; position: relative; }
+.editfragment { width: 95%; height: 300px; background: #eeeeff; }
+.admin { padding-top: 80px; padding-left: 50px; }
+
+table.comments { 
+	border: 1px solid black;
+	font-size: 11px;
+	width: 80%;
+}
+
+td.commentheader { background: #88f; font-weight: bold; font-size: 9px;
+	border-bottom: 1px solid black;
+}
+tr.content td {
+	padding-bottom: 5px;
+	border-bottom: 1px solid black;
+}
+
+/* Fragments */
+.header { 
+	height: 80px; 
+	color: #ffffff; padding: 0px; margin: 0px; z-index: 0; 
+	background: black url(/static/images/grad2.png); 
+}
+
+.header h1 { display: inline; }
+.header a { color: #cccccc; margin: 5px; }
+.headertext { padding-top:13px; padding-left: 50px; }
+.headertext h1 { color: white; font-size: 18px; }
+.header .text { padding-top: 13px; left: 50px;  }
+.header .links { margin-left: 20px; }
+
+#Bio img { width: 80px; float: left; margin-right: 10px; }

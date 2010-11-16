@@ -61,9 +61,9 @@
   int diry = 1;           // dir 0 = down, dir 1 = up
 
   int modeType = 8;       // modeType 1: Full, 2: Half, 4: Quarter, 8: Eighth
-  float stepperdeg = 0.55*modeType;     // steps, half steps, quarter or microsteps per degree
-  int degx = 40;          // degrees of field of view in x
-  int degy = 30;          // degrees of field of view in y
+  float stepperdeg = 0.55*modeType*40;     // steps, half steps, quarter or microsteps per degree
+  int degx = 20;          // degrees of field of view in x
+  int degy = 15;          // degrees of field of view in y
   int degperpixel = 0.5;  // how many degrees wide each pixel should be 
                           // (based on how narrow the beam is focused)
 

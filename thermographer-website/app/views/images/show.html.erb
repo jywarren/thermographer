@@ -1,0 +1,54 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+<img src="/cairo-test/test.png" />
+</p>
+
+<p>
+  <b>Id:</b>
+  <%= @image.id %>
+</p>
+
+<p>
+  <b>Name:</b>
+  <%= @image.name %>
+</p>
+
+<p>
+  <b>Author:</b>
+  <%= @image.author %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @image.description %>
+</p>
+
+<p>
+  <b>Version:</b>
+  <%= @image.version %>
+</p>
+
+<p>
+  <b>Data:</b>
+  <%= @image.data %>
+</p>
+
+<p>
+  <b>Width:</b>
+  <%= @image.width %>
+</p>
+
+<p>
+  <b>Height:</b>
+  <%= @image.height %>
+</p>
+
+<p>
+  <b>Composite:</b>
+  <%= @image.composite %>
+</p>
+
+
+<%= link_to 'Edit', edit_image_path(@image) %> |
+<%= link_to 'Back', images_path %>

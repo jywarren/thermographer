@@ -1,0 +1,209 @@
+/* ikiwiki local style sheet */
+
+/* Add local styling here, instead of modifying style.css. */
+body {
+    margin-left: 4%;
+    margin-right: 4%;
+    color: black;
+    background-color: white;
+}
+
+h1, .header, #footer, #title {
+    clear: both;
+}
+
+.header {
+    padding-bottom: 1em;
+}
+
+img {
+	border: none;
+}
+
+h1,h2,h3,h4,h5,h6, .header, #title {
+    font-family: sans-serif;
+    clear: both;
+    color: #f39914;
+}
+
+h1, #title {
+    font-weight: bold;
+    font-size: 150%;
+}
+
+h2,h3,h4,h5,h6 {
+    margin-left: 2%;
+    margin-right: 2%;
+    font-size: 125%;
+}
+
+p, ol, ul, hr, table {
+    margin-left: 4%;
+    margin-right: 4%;
+}
+
+ol ol {
+    margin-left: 0%;
+    list-style-type: lower-alpha;
+}
+
+ul ul {
+    margin-left: 0;
+}
+
+li p {
+    margin-left: 0%;
+}
+
+pre {
+    font-family: mono;
+    margin-left: 10%;
+    margin-right: 10%;
+    border: 1px solid #c5c5f6;
+    background-color: #dbdbf7;
+    padding: .5em;
+}
+
+a:link {
+    color: #4c4ce6;
+}
+
+a:visited {
+    color: #8f8fe6;
+}
+
+a:hover {
+    color: #f29915;
+    text-decoration: underline;
+}
+
+#logo {
+    text-align: center;
+}
+
+#footer {
+    padding-top: .25em;
+    font-size: 80%;
+}
+
+#legal {
+    clear: both;
+    text-align: center;
+    margin-top: 2em;
+    margin-left: 15%;
+    margin-right: 15%;
+}
+
+#pageinfo {
+    float: right;
+    text-align: right;
+    width: 49%;
+    clear: none;
+}
+
+.actions {
+    float: left;
+    width: 49%;
+    text-align: left;
+}
+
+.actions ul {
+    padding: 0;
+}
+
+.actions ul li {
+    padding-left: 0;
+    padding-right: .5em;
+}
+
+.left {
+    float: left;
+    padding-right: 0.5em;
+}
+
+.right {
+    float: right;
+    padding-left: 0.5em;
+}
+
+hr {
+    height: 1px;
+    border: 0;
+    color: black;
+    background-color: black;
+}
+
+/* Navigation list styling courtesy of Listamatic:
+ *
+ *	Centred List Navbar Updated
+ *	http://css.maxdesign.com.au/listamatic/horizontal27.htm
+ */
+#navcontainer ul {
+    text-align: center;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    padding-left: 0;
+    margin-top: 0;
+    /* cancels gap caused by top padding in Opera 7.54 */
+    margin-left: 0;
+    background-color: #162284;
+    color: white;
+    width: 100%;
+    font-family: Arial,Helvetica,sans-serif;
+    font-weight: bold;
+    line-height: 18px;
+    /* fixes Firefox 0.9.3 */
+}
+
+#navcontainer ul li {
+    display: inline;
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 5px;
+    /* matches link padding except for left and right */
+    padding-top: 5px;
+}
+
+#navcontainer ul li a {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    color: white;
+    text-decoration: none;
+    border-right: 1px solid #fff;
+}
+
+#navcontainer ul li a:hover {
+    color: #f39914;
+}
+
+#navcontainer #active {
+    border-left: 1px solid #fff;
+}
+
+div.tutright {
+	float:right;
+	background-color: #eee;
+	border: solid 1px #888;
+	padding: 0.5em;
+	margin-left: 1em;
+}
+
+div.tutright img {
+	margin: 0px;
+}
+div.clear {
+	clear: both;
+}
+a {
+	text-decoration: none;
+}
+table {
+	border: solid #aaa 1px;
+	border-spacing: 1px;
+}
+td, th {
+	border: solid #aaa 1px;
+	padding: 5px;
+}
