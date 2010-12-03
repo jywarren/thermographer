@@ -4,4 +4,5 @@ log/*.log
 tmp/**/*
 *.swo
 *.line_data.dat
+config/database.yml
 
