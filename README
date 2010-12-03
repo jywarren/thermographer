@@ -1,10 +1,12 @@
-This is the code/documentation folder for the Citizen Cartography Lab THERMOGRAPHER project.
+This is the code/documentation folder for the THERMOGRAPHER project, part of the Public Laboratory for Open Technology and Science. (http://publiclaboratory.org)
 
 It is open source, free software, and is available under the MIT license (see LICENSE in this directory)
 
-Read more about the project here: ...
+With this code you can take the output of a simple DIY scanning thermographer and generate an image of 'heat'. Read more about the project here: http://publiclaboratory.org/tools/thermographer
 
-/control-code/themographer.pde is the main code file, and runs on Arduino (http://arduino.cc)
+/thermographer-website/ is a Ruby on Rails 3.0 (Ruby 1.9.2) web application for online interpretation and publication of your thermal infrared photos.
+
+/control-code/ contains the code to drive the thermographer hardware, and themographer.pde is the main file. It runs on Arduino (http://arduino.cc)
 
 ==================================================
 
