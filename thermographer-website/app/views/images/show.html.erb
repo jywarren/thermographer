@@ -1,54 +1,144 @@
-<p id="notice"><%= notice %></p>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<p>
-<img src="/cairo-test/test.png" />
-</p>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+	<title>Images: <%= controller.action_name %></title>
+	<script src="/lib/prototype-1.6.1.js" type="text/javascript"></script>
+	<script src="/lib/canvas.js" type="text/javascript"></script>
+	<script src="/lib/shortcut.js" type="text/javascript"></script>
+	<script src="/fred.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="/fred.css" type="text/css" media="screen" title="no title" charset="utf-8">
+	<link rel="stylesheet" href="/thermo.css" type="text/css" media="screen" title="no title" charset="utf-8">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="viewport" content="width=device-width; height=device-height; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+</head>
+<body onload="Fred.init({speed:10}); //learn how to customize the Fred environment at http://github.com/jywarren/fred">
 
-<p>
-  <b>Id:</b>
-  <%= @image.id %>
-</p>
+	<div id="fred"></div>
 
-<p>
-  <b>Name:</b>
-  <%= @image.name %>
-</p>
+	<style>
+	</style>
 
-<p>
-  <b>Author:</b>
-  <%= @image.author %>
-</p>
+	<div class="note" style="width:20%;top:8px;right:8px;font-size:22px;">
+		Info here
+	</div>
 
-<p>
-  <b>Description:</b>
-  <%= @image.description %>
-</p>
+	<div id="buttons">
+		<a href="/" class='button'>&laquo; Back</a>
+		<a href="/images/detail/<%= @image.id %>" class='button'>Detail</a>
+		<a href="javascript:void(0)" class='button tool' onClick='new_data()'>Take a picture</a>
+		<a href="javascript:void(0)" class='button tool' onClick='Fred.objects.last().change_scale(0.9*Fred.objects.last().scale)'>-</a>
+		<a href="javascript:void(0)" class='button tool' onClick='Fred.objects.last().change_scale(1.1*Fred.objects.last().scale)'>+</a>
+		<a href="javascript:void(0)" class='button tool' onClick='Fred.objects.last().r -= 0.1'>left</a>
+		<a href="javascript:void(0)" class='button tool' onClick='Fred.objects.last().r += 0.1'>right</a>
+	</div>
 
-<p>
-  <b>Version:</b>
-  <%= @image.version %>
-</p>
+	<script>
 
-<p>
-  <b>Data:</b>
-  <%= @image.data %>
-</p>
+	var raw = "22,24,53,64,54,55,50,32,25,11/23,24,57,62,52,52,45,34,23,12/21,25,50,64,51,48,42,30,20,8/20,29,51,68,50,44,39,26,21,11/19,25,45,69,53,40,32,21,18,8"
+//	    ]
+	var pixelmatrix
+	var momentum = 1
+	var acceleration = 1.01
+	
+	function setup() {
+                Fred.observe('keyup',function(){ momentum = 1;})
 
-<p>
-  <b>Width:</b>
-  <%= @image.width %>
-</p>
+		Fred.keys.add('up',function() {Fred.objects.last().y -= 1*momentum;momentum*=acceleration})
+                Fred.keys.add('down',function() {Fred.objects.last().y += 1*momentum;momentum*=acceleration})
+                Fred.keys.add('left',function() {Fred.objects.last().x -= 1*momentum;momentum*=acceleration})
+                Fred.keys.add('right',function() {Fred.objects.last().x += 1*momentum;momentum*=acceleration})
+                Fred.keys.add('shift+up',function() {Fred.objects.last().change_scale(Fred.objects.last().scale*1.01*momentum);momentum*=acceleration})
+                Fred.keys.add('shift+down',function() {Fred.objects.last().change_scale(Fred.objects.last().scale*0.99*(2-momentum));momentum*=acceleration})
+                Fred.keys.add('shift+left',function() {Fred.objects.last().r -= 0.01*momentum;momentum*=acceleration})
+                Fred.keys.add('shift+right',function() {Fred.objects.last().r += 0.01*momentum;momentum*=acceleration})
 
-<p>
-  <b>Height:</b>
-  <%= @image.height %>
-</p>
+		Fred.select_tool('select')
+		pixelmatrix = new Fred.PixelMatrix(raw,Fred.width/2,Fred.height/2)
+		Fred.add(pixelmatrix)
+	}
 
-<p>
-  <b>Composite:</b>
-  <%= @image.composite %>
-</p>
+	function draw() {
+		save()
+			fillStyle('#aaa')
+			opacity(0.5)
+		restore()
+	}
 
+	function new_data() {
+		pixelmatrix.import_string(prompt("Connect your thermographer to your computer's USB port and turn it on. Once it stops moving, disconnect and press OK."))
+	}
 
-<%= link_to 'Edit', edit_image_path(@image) %> |
-<%= link_to 'Back', images_path %>
+	Fred.PixelMatrix = Class.create(Fred.Image,{
+		initialize: function(data,x,y,scale) {
+			if (Object.isArray(data)) this.data = data
+			if (Object.isString(data)) this.import_string(data)
+			this.x = x || 0
+			this.y = y || 0
+			this.r = 0
+			this.change_scale(20)
+		},
+		change_scale: function(scale) {
+			this.scale = scale
+			this.refresh()
+		},
+		// recalculate width, height. Called on scale change or import of new data.
+		refresh: function() {
+			this.height = this.data.length*this.scale
+			this.width = this.data.first().length*this.scale
+		},
+		draw: function() {
+			save()
+			translate(this.x-this.width/2,this.y-this.height/2)
+			this.data.each(function(row,x) {
+				row.each(function(col,y){
+					fillStyle('rgb('+col+','+col+','+col+')')
+					rect(y*this.scale,x*this.scale,this.scale,this.scale)
+				},this)
+			},this)
+			restore()
+		},
+		import_string: function(raw) {
+			this.data = this.matrix_from_string(raw)
+			this.refresh()
+		},
+		import_canvas: function(x,y,w,h) {
+			this.data = this.matrix_from_canvas_monochrome(x,y,w,h)
+			this.refresh()
+		},
+		// turn a string in format "1,2,3,4/1,2,3,4/4,5,6,7/2,3,4,5" into a nested array, or matrix 
+		matrix_from_string: function(raw) {
+			var rows = raw.split('/')
+			output = []
+			rows.each(function(row){
+				output.push(row.split(','))
+			},this)
+			return output
+		},
+		// fetch a section of the scene and store in a matrix, in monochrome (blending rgb)
+		matrix_from_canvas_monochrome: function(x,y,w,h) {
+			var matrix = []
+			var raw = Fred.canvas.getImageData(x,y,w,h)
+			// read pixel by pixel:
+			for (i=0;i<y;i++) {
+				matrix.push([])
+				for (j=0;j<x;j++) {
+					var pixel = 0
+					pixel += raw.data[((y*(raw.width*4)) + (x*4)) + 0]
+					pixel += raw.data[((y*(raw.width*4)) + (x*4)) + 1]
+					pixel += raw.data[((y*(raw.width*4)) + (x*4)) + 2]
+					pixel = pixel/3
+					matrix.last().push(pixel)
+				}
+			}
+			return matrix
+		},
+	})
+
+	</script>
+
+</body>
+</html>

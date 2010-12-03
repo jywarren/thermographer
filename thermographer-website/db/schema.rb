@@ -21,6 +21,9 @@ ActiveRecord::Schema.define(:version => 20101115004339) do
     t.integer  "width"
     t.integer  "height"
     t.string   "composite"
+    t.string   "photo_file_name"
+    t.string   "photo_content_type"
+    t.string   "photo_file_size"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

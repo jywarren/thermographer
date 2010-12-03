@@ -1,5 +1,3 @@
-#require 'cairo'
-
 class ImagesController < ApplicationController
   # GET /images
   # GET /images.xml
@@ -17,26 +15,8 @@ class ImagesController < ApplicationController
   def show
     @image = Image.find(params[:id])
 
-	i = [	[22,24,53,64,54,55,50,32,25,11],
-		[23,24,57,62,52,52,45,34,23,12],
-		[21,25,50,64,51,48,42,30,20,8],
-		[20,29,51,68,50,44,39,26,21,11],
-		[19,25,45,69,53,40,32,21,18,8]
-	    ]
-	iwidth = i[0].length
-	iheight = i.length
-	c = Cairo::Context.new
-	iheight.each do |row|
-		iwidth.each do |col|
-			c.set_source_rgb(0, 0, 0)
-			c.rectangle(row,col,1,1)
-			c.fill()
-		end
-	end
-	c.target.write_to_png("public/cairo-test/test.png")	
-
     respond_to do |format|
-      format.html # show.html.erb
+      format.html { render :layout => false } # show.html.erb
       format.xml  { render :xml => @image }
     end
   end
