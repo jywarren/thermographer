@@ -9,4 +9,6 @@ db/schema.rb
 config/database.yml
 config/amazon_s3.yml
 public/system*
+*.pid
+*.pid.lock
 
