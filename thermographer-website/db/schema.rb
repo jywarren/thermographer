@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(:version => 20101115004339) do
     t.string   "name"
     t.string   "author"
     t.text     "description"
-    t.integer  "version"
+    t.integer  "version",            :default => 0
     t.text     "data"
     t.integer  "width"
     t.integer  "height"
