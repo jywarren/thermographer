@@ -6,6 +6,8 @@ Fred = {
 	speed: 30,
 	height: '100%',
 	width: '100%',
+	// whether to display the Fred logo
+	logo: true,
 	layers: [],
 	tools: [],
 	frame: 0,
@@ -46,14 +48,18 @@ Fred = {
 		Fred.element.style.position = 'absolute'
 		Fred.element.style.top = 0
 		Fred.element.style.left = 0
-		Fred.resize(Fred.width,Fred.height)
+		Fred.resize()
+		Event.observe(window, 'resize', Fred.resize_handler);
 		// Initiate main loop:
 		TimerManager.setup(Fred.draw,this,Fred.speed)
 		// Access main program grid:
 		var whtrbtobj
 		// Initialize other modules which are waiting for Fred to be ready
 		Fred.keys.initialize()
-		if (setup) setup()
+		// Attempt to connect locally (inline) defined draw() and setup() functions
+                try { Fred.local_setup = setup || false } catch(e) { Fred.local_setup = false }
+                try { Fred.local_draw = draw || false } catch(e) { Fred.local_draw = false }
+		if (Fred.local_setup) Fred.local_setup()
 	},
 	draw: function() {
 		Fred.fire('fred:predraw')
@@ -65,11 +71,13 @@ Fred = {
 		Fred.date = new Date
 		this.layers.each(function(layer){layer.draw()})
 		Fred.fire('fred:postdraw')
-		// debug image
-		fillStyle('#a00')
-		rect(10,10,40,40)
-		drawText('georgia',15,'white',12,30,'fred')
-		if (draw) draw()
+		// debug image -- Fred logo
+		if (Fred.logo) {
+			fillStyle('#a00')
+			rect(10,10,40,40)
+			drawText('georgia',15,'white',12,30,'fred')
+		}
+		if (Fred.local_draw) Fred.local_draw()
 	},
 	select_layer: function(layer) {
 		Fred.active_layer = layer
@@ -77,48 +85,60 @@ Fred = {
 		Fred.objects = Fred.active_layer.objects
 		Fred.canvas = Fred.active_layer.canvas
 	},
+	/*
+	 * Add an object to Fred's active layer and autodetect its event listeners
+	 */
 	add: function(obj) {
 		this.objects.push(obj)
-		$H(obj).keys().each(function(method) {
-			Fred.listeners.each(function(event) {
-				if (method == ('on_'+event)) {
-					Fred.observe(event,obj[method].bindAsEventListener(obj))
-				}
-			},this)
-			if (method == 'draw') Fred.stop_observing('fred:postdraw',obj.draw)
-		},this)
+		this.attach_listeners(obj)
 	},
+	/*
+	 * Remove an object from Fred's active layer and disconnect its event listeners
+	 */
 	remove: function(obj) {
 		Fred.objects.each(function(obj2,index){
 			if (obj2 == obj) {
 				Fred.objects.splice(index,1)
 			}
 		},this)
-		$H(obj).keys().each(function(method) {
-			Fred.listeners.each(function(event) {
-				if (method == ('on_'+event)) {
-					Fred.stop_observing(event,obj[method].bindAsEventListener(obj))
-				}
-			},this)
-			if (method == 'draw') Fred.stop_observing('fred:postdraw',obj.draw)
-		},this)
+		this.detach_listeners(obj)
 		return obj
 	},
+	// Used to auto-resize Fred; see Fred.init
+	resize_handler: function(e,width,height) {
+		Fred.resize(width,height)
+	},
 	resize: function(width,height) {
-		width = width || Fred.width
-		height = height || Fred.height
+		width = width || document.viewport.getWidth() 
+		height = height || document.viewport.getHeight()
 		// document.viewport.getWidth() yields undefined in Android browser
 		// try running without resizing just in Android -- disable rotate anyway 
 		if (width[width.length-1] == '%') Fred.width = parseInt(document.viewport.getWidth()*100/width.substr(0,width.length-1))
 		else Fred.width = width
 		if (height[height.length-1] == '%') Fred.height = parseInt(document.viewport.getHeight()*100/height.substr(0,height.length-1))
 		else Fred.height = height
-		Fred.element.style.width = width
-		Fred.element.style.height = height
+		Fred.element.style.width = width+'px'
+		Fred.element.style.height = height+'px'
 		Fred.layers.each(function(layer){
 			layer.element.width = Fred.width
 			layer.element.height = Fred.height
 		})
+		Fred.draw()
+	},
+	/*
+	 * Returns true if an object is a known object class; 
+	 * this should eventually simply check if the object
+	 * conforms to the Fred object spec. For now, accepted
+	 * types should have an array of points, with point.x
+	 * and point.y parameters.
+	 */
+	is_object: function(supposed_object) {
+		var types = [Fred.Polygon,Fred.Group,Fred.Image]
+		var passes = false //assume no
+		types.each(function(type) {
+			if (supposed_object instanceof type) passes = true
+		},this)
+		return passes
 	},
 	text_style: {
 		fontFamily: 'georgia',
@@ -153,31 +173,52 @@ Fred = {
 		e.preventDefault()
 		Fred.drag = false
 	},
+	/*
+	 * Deactivate old listeners. Can be run on any object with 
+	 * a stored Hash of listeners, e.g. object.listeners.get(key)
+	 */
+	detach_listeners: function(obj) {
+		$H(obj).keys().each(function(method) {
+			Fred.listeners.each(function(event) {
+				if (method == ('on_'+event)) {
+					Fred.stop_observing(event,obj.listeners.get(method))
+				}
+			},this)
+			if (method == 'draw') Fred.stop_observing('fred:postdraw',obj.listeners.get('draw'))
+		},this)
+	},
+	/*
+	 * Autodetect and activate listeners for any object. Object will receive 
+	 * a stored Hash of listeners, e.g. object.listeners.get(key).
+	 * If object already has such a hash it's stripped of listeners, and reattached
+	 * from scratch.
+	 */
+	attach_listeners: function(obj) {
+		if (Object.isHash(obj.listeners)) {
+			Fred.detach_listeners(obj)
+		}
+		obj.listeners = new Hash
+		// Scan tool for on_foo listeners, connect them to available events:
+		$H(obj).keys().each(function(method) {
+			Fred.listeners.each(function(event) {
+				if (method == ('on_'+event)) {
+					obj.listeners.set(method,obj[method].bindAsEventListener(obj))
+					Fred.observe(event,obj.listeners.get(method))
+				}
+			},this)
+			if (method == 'draw') {
+				obj.listeners.set('draw',obj['draw'].bindAsEventListener(obj))
+				Fred.observe('fred:postdraw',obj.listeners.get('draw'))
+			}
+		})
+	},
 	select_tool: function(tool) {
 		console.log('selecting '+tool)
 		if (Fred.active_tool) Fred.active_tool.deselect()
-		// Deactivate old listeners
-		$H(Fred.active_tool).keys().each(function(method) {
-			Fred.listeners.each(function(event) {
-				if (method == ('on_'+event)) {
-					Fred.stop_observing(event,Fred.active_tool.listeners.get(method))
-				}
-			},this)
-			if (method == 'draw') Fred.stop_observing('fred:postdraw',Fred.active_tool.draw)
-		},this)
+		Fred.detach_listeners(Fred.active_tool)
 		Fred.active_tool = Fred.tools[tool]
 		Fred.active_tool.select()
-		Fred.active_tool.listeners = new Hash
-		// Scan tool for on_foo listeners, connect them to available events:
-		$H(Fred.tools[tool]).keys().each(function(method) {
-			Fred.listeners.each(function(event) {
-				if (method == ('on_'+event)) {
-					Fred.active_tool.listeners.set(method,Fred.active_tool[method].bindAsEventListener(Fred.active_tool))
-					Fred.observe(event,Fred.active_tool.listeners.get(method))
-				}
-			},this)
-			if (method == 'draw') Fred.observe('fred:postdraw',Fred.active_tool.draw.bindAsEventListener(Fred.active_tool))
-		})
+		Fred.attach_listeners(Fred.active_tool)
 	},
 	/**
 	 * Moves the object (all its points as object.points, including beziers)
@@ -185,20 +226,30 @@ Fred = {
 	 * and moves either to an absolute position or one relative to the object's
 	 * current position.
 	 */
-	move: function(object,x,y,absolute) {
-		if (object.move) {
-			object.move(x,y,absolute)
-		} else if (object instanceof Fred.Polygon || object instanceof Fred.Group) {
+	move: function(obj,x,y,absolute) {
+		// If the object has its own way of moving, this is preferred.
+		// Thinking of tweening, acceleration, recursion
+		if (obj.move) {
+			obj.move(x,y,absolute)
+		} else if (Fred.is_object(obj)) {
 			// we know how to deal with these
-			object.points.each(function(point){
+			obj.points.each(function(point){
 				if (absolute) {
-					point.x = x
-					point.y = y
+					point.x = point.x-obj.x+x
+					point.y = point.y-obj.y+y
 				} else {
 					point.x += x
 					point.y += y
 				}
 			},this)
+			// must correct the object x,y also
+			if (absolute) {
+				obj.x = x
+				obj.y = y
+			} else {
+				obj.x += x
+				obj.y += y
+			}
 		}
 	},
         /**
@@ -222,17 +273,37 @@ Fred = {
 		if (a == 'keypress' || a == 'keyup') document.stopObserving(a,b,c)
 		else Fred.element.stopObserving(a,b,c)
 	},
+	// Eventually these errors will pop up in the user environment.
+	error: function(e) {
+		console.log(e)
+	},
+	/*
+	 * 
+	 */
+	go: function(url) {
+		window.location = url
+	},
 }
 
-//= require <layer>
+// For debugging purposes
+// If the console doesn't exist (Safari, IE, etc), just create empty methods
+if (!window.console) console = {};
+console.log = console.log || function(){};
+console.warn = console.warn || function(){};
+console.error = console.error || function(){};
+console.info = console.info || function(){};
 
+//= require <layer>
+//= require <selection>
+
+//= require <primitives/object>
 //= require <primitives/point>
 //= require <primitives/polygon>
 //= require <primitives/group>
 //= require <primitives/image>
 
 //= require <tools/tool>
-//= require <tools/select>
+//= require <tools/edit>
 //= require <tools/pen>
 //= require <tools/place>
 

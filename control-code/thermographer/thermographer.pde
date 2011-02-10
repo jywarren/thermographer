@@ -1,8 +1,8 @@
-///////////////////////////////////////////////////////////
-// Thermographer control code - Citizen Cartography Lab
-///////////////////////////////////////////////////////////
+/////////////////////////////////////////////////
+// Thermographer control code - Public Laboratory
+/////////////////////////////////////////////////
 
-// http://grassrootsmapping.org (for now)
+// http://publiclaboratory.org/tool/thermographer
 //
 // This code is very thoroughly documented/commented to help beginners get a foothold. 
 // 	Please comment your code accordingly.
@@ -16,6 +16,8 @@
 // 	http://www.melexis.com/Sensor_ICs_Infrared_and_Optical/Infrared/Digital_plug__play_infrared_thermometer_in_a_TO-can_615.aspx
 // (Melexis MLX90614 infrared non contact temperature sensor)
 
+//Read data from the camera with the shell/terminal command (linux,mac) `screen -L /dev/ttyUSB* 9600`
+
 //Thermometer setup:
 
 // pin numbering -- looking down from above, 1-4 counter-clockwise starting to the CCW side of the marker
@@ -27,10 +29,11 @@
     \_____/
 */
 
-// connect MLX90614 pin 1 SCL to Arduino pin analog 5
-// connect MLX90614 pin 2 SDA to Arduino pin analog 4
-// connect MLX90614 pin 3 Vdd to Arduino pin +5V
-// connect MLX90614 pin 4 Vss to Arduino pin GND
+//                                            pin - first ribbon - second ribbon
+// connect MLX90614 pin 1 SCL to Arduino pin analog 5 - green - green
+// connect MLX90614 pin 2 SDA to Arduino pin analog 4 - blue - black
+// connect MLX90614 pin 3 Vdd to Arduino pin +5V - purple - red
+// connect MLX90614 pin 4 Vss to Arduino pin GND - grey - white
 // solder 100n capacitor between Vdd and Vss
 
 // Melexis code based on example by:
@@ -61,14 +64,17 @@
   int diry = 1;           // dir 0 = down, dir 1 = up
 
   int modeType = 8;       // modeType 1: Full, 2: Half, 4: Quarter, 8: Eighth
+//  float stepperdeg = 0.55*modeType*40;     // steps, half steps, quarter or microsteps per degree
   float stepperdeg = 0.55*modeType*40;     // steps, half steps, quarter or microsteps per degree
-  int degx = 20;          // degrees of field of view in x
-  int degy = 15;          // degrees of field of view in y
-  int degperpixel = 0.5;  // how many degrees wide each pixel should be 
+  int degx = 16;          // degrees of field of view in x
+  int degy = 12;          // degrees of field of view in y
+  int degperpixel = 3;  // how many degrees wide each pixel should be 
                           // (based on how narrow the beam is focused)
-
-  char st1[30]; // used in thermometer section
-  char imagerow[640]; // optimistic pixel width
+  int lineheight = 1;
+  
+  //String imagestring = String(100);
+  //char imagecol[480];
+  char reading[100];
   
   int trigger = 0;
   
@@ -91,6 +97,8 @@
 void setup() {
   
   Serial.begin(9600);     // open the serial connection at 9600bps
+//  Serial.begin(115200);     // open the serial connection at 9600bps
+  Serial.println("Beginning setup");
 
   PORTC = (1 << PORTC4) | (1 << PORTC5);  //enable internal pullup resistors on i2c ports (for the melexis)
 
@@ -108,15 +116,19 @@ void setup() {
   pinMode(MS1Y, OUTPUT);   // set pin 13 to output
   pinMode(MS2Y, OUTPUT);   // set pin 10 to output
   pinMode(SLEEPY, OUTPUT); // set pin 12 to output
+  Serial.println("Ending setup");
 }
 
 void loop()
 {
-  if (digitalRead(0) == HIGH) { // Only start imaging when you press the big button (not working)
-    trigger = 1;
-  }
-  Serial.print("trigger: ");
-  Serial.println(trigger);
+//  if (digitalRead(0) == HIGH) { // Only start imaging when you press the big button (not working)
+  trigger = 1;
+//  }
+//  Serial.print("trigger: ");
+//  Serial.println(trigger);
+
+  Serial.println("Beginning loop");
+
   
   if (trigger == 1) {
     digitalWrite(MS1X, MS1_MODE(modeType));  // Set state of MS1 based on the returned value from the MS1_MODE() switch statement.
@@ -127,33 +139,35 @@ void loop()
     digitalWrite(MS2Y, MS2_MODE(modeType));  // Set state of MS2 based on the returned value from the MS2_MODE() switch statement.
     digitalWrite(SLEEPY, HIGH);              // Set the Sleep mode to AWAKE.
 
-    int panup = degy;
+    int panup = (int)(stepperdeg*degy);
     while (panup>0) {
-      digitalWrite(STEPY, LOW);              // This LOW to HIGH change is what creates the..
-      digitalWrite(STEPY, HIGH);             // .."Rising Edge" so the easydriver knows to when to step.
-      delayMicroseconds(1600/modeType);     // This delay time determines the speed of the stepper motor. 
-      digitalWrite(DIRY, HIGH);
+        digitalWrite(STEPY, LOW);              // This LOW to HIGH change is what creates the..
+        digitalWrite(STEPY, HIGH);             // .."Rising Edge" so the easydriver knows to when to step.
+        delayMicroseconds(1600/modeType);      // This delay time determines the speed of the s
+        digitalWrite(DIRY, HIGH);
       panup--;
     }
   
-    int stepy = 0;                              // Set the counter variable.     
-    while(stepy<(stepperdeg*degy))                 // Iterate for 200, 400, then 800, then 1600 steps, 
-                                                // depending on full/half/quarter/eighth step mode
-                                            // This guarantees one full rotation of the spindle.
-    {
-      digitalWrite(STEPY, LOW);              // This LOW to HIGH change is what creates the..
-      digitalWrite(STEPY, HIGH);             // .."Rising Edge" so the easydriver knows to when to step.
-      delayMicroseconds(1600/modeType);     // This delay time determines the speed of the stepper motor. 
-  
-      
-      int stepx = 0;                              // Set the counter variable.     
-      while(stepx<(stepperdeg*degx))                 // Iterate for 200, 400, then 800, then 1600 steps, 
-                                                  // depending on full/half/quarter/eighth step mode
-                                              // This guarantees one full rotation of the spindle.
-      {
-        digitalWrite(STEPX, LOW);              // This LOW to HIGH change is what creates the..
-        digitalWrite(STEPX, HIGH);             // .."Rising Edge" so the easydriver knows to when to step.
-        delayMicroseconds(1600/modeType);     // This delay time determines the speed of the stepper motor. 
+    int stepx = 0;                              // Set the counter variable.     
+    Serial.print("X steps: ");
+    Serial.println(stepperdeg*degx);
+    while(stepx<(int)(stepperdeg*degx)) {
+
+      Serial.print("Starting horizontal sweep ");
+      Serial.println(stepx);
+      move_x();
+        
+      //imagestring = String("/");
+      //imagestring += "/";
+//      reading += '/';
+
+      int stepy = 0;                              // Set the counter variable.     
+    Serial.print("Y steps: ");
+    Serial.println(stepperdeg*degy);
+      while(stepy<(int)(stepperdeg*degy)) {
+//        Serial.print("Starting vertical sweep ");
+//          Serial.println(stepy);
+        move_y();
   
         // Thermometer section:
         long int tpl;
@@ -162,23 +176,28 @@ void loop()
         tpl = tpl *10;
         tpl = tpl / 5;
         tpl=tpl-27315;
+
         //sprintf(st1,"object temp: %03li.%li",tpl/100, abs(tpl %100) );
-        sprintf(imagerow,"%03li.%li,",tpl/100, abs(tpl %100) );
-   
-        stepx++;
+        sprintf(reading,"%03li.%li,",tpl/100, abs(tpl %100) );
+        Serial.print(reading); // print one row of data
+
+        stepy += 1;
       }                              
   
-      Serial.println(st1); // print one row of data
+//      Serial.println(reading);
+//      reading = '>';
         
-      if (dirx == 0) {
-        digitalWrite(DIRX, LOW);                 // Set the direction change LOW to HIGH to go in opposite direction
-        dirx = 1;
+      if (diry == 0) {
+        Serial.println("up");
+        digitalWrite(DIRY, LOW);                 // Set the direction change LOW to HIGH to go in opposite direction
+        diry = 1;
       } else {
-        digitalWrite(DIRX, HIGH);
-        dirx = 0;
+        Serial.println("down");
+        digitalWrite(DIRY, HIGH);
+        diry = 0;
       }
   
-      stepy++;
+      stepx += 1;
     }                              
   
     //modeType = modeType * 2;                // Multiply the current modeType value by 2 and make the result the new value for modeType.
@@ -207,6 +226,26 @@ int write_image(float temp) {
   
 }
 
+int move_x() {
+      int i = lineheight;
+      while (i > 0) {
+        digitalWrite(STEPX, LOW);              // This LOW to HIGH change is what creates the..
+        digitalWrite(STEPX, HIGH);             // .."Rising Edge" so the easydriver knows to when to step.
+        delayMicroseconds(1600/modeType);      // This delay time determines the speed of the stepper motor. 
+        i--;
+      } 
+}
+
+int move_y() {
+      int i = lineheight;
+      while (i > 0) {
+        digitalWrite(STEPY, LOW);              // This LOW to HIGH change is what creates the..
+        digitalWrite(STEPY, HIGH);             // .."Rising Edge" so the easydriver knows to when to step.
+        delayMicroseconds(1600/modeType);      // This delay time determines the speed of the stepper motor. 
+        i--;
+      } 
+}
+
 int MS1_MODE(int MS1_StepMode){              // A function that returns a High or Low state number for MS1 pin
   switch(MS1_StepMode){                      // Switch statement for changing the MS1 pin state
                                              // Different input states allowed are 1,2,4 or 8
@@ -224,7 +263,7 @@ int MS1_MODE(int MS1_StepMode){              // A function that returns a High o
     break;
   case 8:
     MS1_StepMode = 1;
-    Serial.println("Step Mode is Eighth...");
+    Serial.println("Step Mode is .. Eighth...");
     break;
   }
   return MS1_StepMode;
@@ -259,7 +298,6 @@ long int readMLXtemperature(int TaTo) {
   i2c_init();
   i2c_start_wait(dev+I2C_WRITE);  // set device address and write mode
   if (TaTo) i2c_write(0x06); else i2c_write(0x07);                // or command read object or ambient temperature
-
   i2c_rep_start(dev+I2C_READ);    // set device address and read mode
   dlsb = i2c_readAck();       // read data lsb
   dmsb = i2c_readAck();      // read data msb

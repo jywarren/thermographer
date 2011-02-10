@@ -56,7 +56,7 @@
                 Fred.keys.add('shift+left',function() {Fred.objects.last().r -= 0.01*momentum;momentum*=acceleration})
                 Fred.keys.add('shift+right',function() {Fred.objects.last().r += 0.01*momentum;momentum*=acceleration})
 
-		Fred.select_tool('select')
+		Fred.select_tool('edit')
 		pixelmatrix = new Fred.PixelMatrix(raw,Fred.width/2,Fred.height/2)
 		Fred.add(pixelmatrix)
 	}
@@ -108,6 +108,15 @@
 		import_canvas: function(x,y,w,h) {
 			this.data = this.matrix_from_canvas_monochrome(x,y,w,h)
 			this.refresh()
+		},
+		// break a long string up into sections
+		breakup: function(string,width) {
+			width = width | 64
+			var trimmed_string = ""
+			while (string.length > width) {
+				// trimmed_string = trimmed_string + "/" + string.
+			}
+			return trimmed_string
 		},
 		// turn a string in format "1,2,3,4/1,2,3,4/4,5,6,7/2,3,4,5" into a nested array, or matrix 
 		matrix_from_string: function(raw) {

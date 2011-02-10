@@ -15,6 +15,12 @@ With this code you can take the output of a simple DIY scanning thermographer an
 
 /control-code/ contains the code to drive the thermographer hardware, and themographer.pde is the main file. It runs on Arduino (http://arduino.cc)
 
+To save output from the camera on Linux or Mac OS X, run the command:
+
+screen -L /dev/ttyUSB* 9600
+
+and when you're done, press control-a, then the letter h. This will save a copy of the readout.
+
 ==================================================
 
 Buy the EasyDriver stepper motor controller here:

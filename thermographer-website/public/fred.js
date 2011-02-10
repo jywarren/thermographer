@@ -35,6 +35,7 @@ Fred = {
 	speed: 30,
 	height: '100%',
 	width: '100%',
+	logo: true,
 	layers: [],
 	tools: [],
 	frame: 0,
@@ -68,11 +69,14 @@ Fred = {
 		Fred.element.style.position = 'absolute'
 		Fred.element.style.top = 0
 		Fred.element.style.left = 0
-		Fred.resize(Fred.width,Fred.height)
+		Fred.resize()
+		Event.observe(window, 'resize', Fred.resize_handler);
 		TimerManager.setup(Fred.draw,this,Fred.speed)
 		var whtrbtobj
 		Fred.keys.initialize()
-		if (setup) setup()
+                try { Fred.local_setup = setup || false } catch(e) { Fred.local_setup = false }
+                try { Fred.local_draw = draw || false } catch(e) { Fred.local_draw = false }
+		if (Fred.local_setup) Fred.local_setup()
 	},
 	draw: function() {
 		Fred.fire('fred:predraw')
@@ -83,10 +87,12 @@ Fred = {
 		Fred.date = new Date
 		this.layers.each(function(layer){layer.draw()})
 		Fred.fire('fred:postdraw')
-		fillStyle('#a00')
-		rect(10,10,40,40)
-		drawText('georgia',15,'white',12,30,'fred')
-		if (draw) draw()
+		if (Fred.logo) {
+			fillStyle('#a00')
+			rect(10,10,40,40)
+			drawText('georgia',15,'white',12,30,'fred')
+		}
+		if (Fred.local_draw) Fred.local_draw()
 	},
 	select_layer: function(layer) {
 		Fred.active_layer = layer
@@ -94,46 +100,57 @@ Fred = {
 		Fred.objects = Fred.active_layer.objects
 		Fred.canvas = Fred.active_layer.canvas
 	},
+	/*
+	 * Add an object to Fred's active layer and autodetect its event listeners
+	 */
 	add: function(obj) {
 		this.objects.push(obj)
-		$H(obj).keys().each(function(method) {
-			Fred.listeners.each(function(event) {
-				if (method == ('on_'+event)) {
-					Fred.observe(event,obj[method].bindAsEventListener(obj))
-				}
-			},this)
-			if (method == 'draw') Fred.stop_observing('fred:postdraw',obj.draw)
-		},this)
+		this.attach_listeners(obj)
 	},
+	/*
+	 * Remove an object from Fred's active layer and disconnect its event listeners
+	 */
 	remove: function(obj) {
 		Fred.objects.each(function(obj2,index){
 			if (obj2 == obj) {
 				Fred.objects.splice(index,1)
 			}
 		},this)
-		$H(obj).keys().each(function(method) {
-			Fred.listeners.each(function(event) {
-				if (method == ('on_'+event)) {
-					Fred.stop_observing(event,obj[method].bindAsEventListener(obj))
-				}
-			},this)
-			if (method == 'draw') Fred.stop_observing('fred:postdraw',obj.draw)
-		},this)
+		this.detach_listeners(obj)
 		return obj
 	},
+	resize_handler: function(e,width,height) {
+		Fred.resize(width,height)
+	},
 	resize: function(width,height) {
-		width = width || Fred.width
-		height = height || Fred.height
+		width = width || document.viewport.getWidth()
+		height = height || document.viewport.getHeight()
 		if (width[width.length-1] == '%') Fred.width = parseInt(document.viewport.getWidth()*100/width.substr(0,width.length-1))
 		else Fred.width = width
 		if (height[height.length-1] == '%') Fred.height = parseInt(document.viewport.getHeight()*100/height.substr(0,height.length-1))
 		else Fred.height = height
-		Fred.element.style.width = width
-		Fred.element.style.height = height
+		Fred.element.style.width = width+'px'
+		Fred.element.style.height = height+'px'
 		Fred.layers.each(function(layer){
 			layer.element.width = Fred.width
 			layer.element.height = Fred.height
 		})
+		Fred.draw()
+	},
+	/*
+	 * Returns true if an object is a known object class;
+	 * this should eventually simply check if the object
+	 * conforms to the Fred object spec. For now, accepted
+	 * types should have an array of points, with point.x
+	 * and point.y parameters.
+	 */
+	is_object: function(supposed_object) {
+		var types = [Fred.Polygon,Fred.Group,Fred.Image]
+		var passes = false //assume no
+		types.each(function(type) {
+			if (supposed_object instanceof type) passes = true
+		},this)
+		return passes
 	},
 	text_style: {
 		fontFamily: 'georgia',
@@ -168,43 +185,72 @@ Fred = {
 		e.preventDefault()
 		Fred.drag = false
 	},
+	/*
+	 * Deactivate old listeners. Can be run on any object with
+	 * a stored Hash of listeners, e.g. object.listeners.get(key)
+	 */
+	detach_listeners: function(obj) {
+		$H(obj).keys().each(function(method) {
+			Fred.listeners.each(function(event) {
+				if (method == ('on_'+event)) {
+					Fred.stop_observing(event,obj.listeners.get(method))
+				}
+			},this)
+			if (method == 'draw') Fred.stop_observing('fred:postdraw',obj.listeners.get('draw'))
+		},this)
+	},
+	/*
+	 * Autodetect and activate listeners for any object. Object will receive
+	 * a stored Hash of listeners, e.g. object.listeners.get(key).
+	 * If object already has such a hash it's stripped of listeners, and reattached
+	 * from scratch.
+	 */
+	attach_listeners: function(obj) {
+		if (Object.isHash(obj.listeners)) {
+			Fred.detach_listeners(obj)
+		}
+		obj.listeners = new Hash
+		$H(obj).keys().each(function(method) {
+			Fred.listeners.each(function(event) {
+				if (method == ('on_'+event)) {
+					obj.listeners.set(method,obj[method].bindAsEventListener(obj))
+					Fred.observe(event,obj.listeners.get(method))
+				}
+			},this)
+			if (method == 'draw') {
+				obj.listeners.set('draw',obj['draw'].bindAsEventListener(obj))
+				Fred.observe('fred:postdraw',obj.listeners.get('draw'))
+			}
+		})
+	},
 	select_tool: function(tool) {
 		console.log('selecting '+tool)
 		if (Fred.active_tool) Fred.active_tool.deselect()
-		$H(Fred.active_tool).keys().each(function(method) {
-			Fred.listeners.each(function(event) {
-				if (method == ('on_'+event)) {
-					Fred.stop_observing(event,Fred.active_tool.listeners.get(method))
-				}
-			},this)
-			if (method == 'draw') Fred.stop_observing('fred:postdraw',Fred.active_tool.draw)
-		},this)
+		Fred.detach_listeners(Fred.active_tool)
 		Fred.active_tool = Fred.tools[tool]
 		Fred.active_tool.select()
-		Fred.active_tool.listeners = new Hash
-		$H(Fred.tools[tool]).keys().each(function(method) {
-			Fred.listeners.each(function(event) {
-				if (method == ('on_'+event)) {
-					Fred.active_tool.listeners.set(method,Fred.active_tool[method].bindAsEventListener(Fred.active_tool))
-					Fred.observe(event,Fred.active_tool.listeners.get(method))
-				}
-			},this)
-			if (method == 'draw') Fred.observe('fred:postdraw',Fred.active_tool.draw.bindAsEventListener(Fred.active_tool))
-		})
+		Fred.attach_listeners(Fred.active_tool)
 	},
-	move: function(object,x,y,absolute) {
-		if (object.move) {
-			object.move(x,y,absolute)
-		} else if (object instanceof Fred.Polygon || object instanceof Fred.Group) {
-			object.points.each(function(point){
+	move: function(obj,x,y,absolute) {
+		if (obj.move) {
+			obj.move(x,y,absolute)
+		} else if (Fred.is_object(obj)) {
+			obj.points.each(function(point){
 				if (absolute) {
-					point.x = x
-					point.y = y
+					point.x = point.x-obj.x+x
+					point.y = point.y-obj.y+y
 				} else {
 					point.x += x
 					point.y += y
 				}
 			},this)
+			if (absolute) {
+				obj.x = x
+				obj.y = y
+			} else {
+				obj.x += x
+				obj.y += y
+			}
 		}
 	},
 	observe: function(a,b,c) {
@@ -219,7 +265,22 @@ Fred = {
 		if (a == 'keypress' || a == 'keyup') document.stopObserving(a,b,c)
 		else Fred.element.stopObserving(a,b,c)
 	},
+	error: function(e) {
+		console.log(e)
+	},
+	/*
+	 *
+	 */
+	go: function(url) {
+		window.location = url
+	},
 }
+
+if (!window.console) console = {};
+console.log = console.log || function(){};
+console.warn = console.warn || function(){};
+console.error = console.error || function(){};
+console.info = console.info || function(){};
 
 Fred.Layer = Class.create({
 	initialize: function(name,args) {
@@ -250,6 +311,89 @@ Fred.Layer = Class.create({
 	}
 })
 
+Fred.selection = {
+	members: [],
+	x: 0,
+	y: 0,
+	empty: true,
+	add: function(obj) {
+		if (obj.selected != true) {
+			this.members.push(obj)
+			this.empty = false
+			console.log('added object')
+			obj.selected = true
+		}
+	},
+	/*
+	 * Remove an object from Fred's active layer and disconnect its event listeners
+	 */
+	remove: function(obj) {
+		this.members.each(function(member,index){
+			if (member == obj) {
+				member.selected = false
+				this.members.splice(index,1)
+			}
+		},this)
+		this.empty = (this.size() == 0)
+		return obj
+	},
+	clear: function() {
+		this.history.push(this.members)
+		this.members.each(function(obj) {
+			obj.selected = false
+		},this)
+		this.empty = true
+		this.members = []
+	},
+	size: function() {
+		return this.members.length
+	},
+	move: function(x,y,absolute) {
+		this.members.each(function(obj) {
+			if (obj.move) {
+				obj.move(x,y,absolute)
+			} else if (Fred.is_object(obj)) {
+				obj.points.each(function(point){
+					if (absolute) {
+						point.x = point.x-obj.x+x
+						point.y = point.y-obj.y+y
+					} else {
+						point.x += x
+						point.y += y
+					}
+				},this)
+				if (absolute) {
+					obj.x = x
+					obj.y = y
+				} else {
+					obj.x += x
+					obj.y += y
+				}
+			}
+		},this)
+	},
+	history: [],
+	get_under_pointer: function() {
+		return this.get_under_point(Fred.pointer_x,Fred.pointer_y)
+	},
+	get_under_point: function(x,y) {
+		this.clear()
+		Fred.objects.each(function(obj){
+			if (this.empty && Fred.is_object(obj)) {
+				if (Fred.Geometry.is_point_in_poly(obj.points,x,y)) {
+					console.log('its an object, were over it, and were empty')
+					Fred.selection.add(obj)
+				}
+			}
+		},this)
+		if (this.empty) return false
+		else return this.members
+	},
+}
+
+Fred.Object = Class.create({
+
+})
 Fred.Point = Class.create({
 	initialize: function(x,y) {
 		this.x = x
@@ -538,41 +682,53 @@ Fred.Tool = Class.create({
 	},
 })
 
-Fred.tools.select = new Fred.Tool('select & manipulate objects',{
+Fred.tools.edit = new Fred.Tool('select & manipulate objects',{
+	selection_box: {
+		points: [ {x: 0, y: 0}, {x: 0, y:0},
+			  {x: 0, y: 0}, {x: 0, y:0} ]
+	},
 	select: function() {
+		Fred.keys.add('g',function(){
+			console.log('grouping')
+			new Fred.Group(Fred.selection.members)
+		})
 	},
 	deselect: function() {
 	},
 	on_dblclick: function() {
-
+		if (!Fred.selection.empty) {
+			Fred.selection.each(function(selection) {
+				var existing = selection.script || "on_mouseup: function() { console.log('hi') }"
+				input = prompt("Edit this object's code:",existing)
+				if (input != null) selection.script = ("{"+input+"}").evalJSON()
+				Fred.attach_listeners(selection.script)
+			},this)
+		}
 	},
 	on_mousedown: function() {
-		this.selected_object = false
-		Fred.active_layer.objects.each(function(object){
-			var selectables = [Fred.Polygon,Fred.Group]
-			if (object instanceof Fred.Polygon || object instanceof Fred.Group) {
-				if (Fred.Geometry.is_point_in_poly(object.points,Fred.pointer_x,Fred.pointer_y)) {
-					this.selected_object = object
-					this.selected_object_x = object.x
-					this.selected_object_y = object.y
-					this.click_x = Fred.pointer_x
-					this.click_y = Fred.pointer_y
-				}
-			}
-		},this)
+		this.click_x = Fred.pointer_x
+		this.click_y = Fred.pointer_y
+		if (Fred.selection.get_under_pointer()) {
+			this.dragging_object = true
+			this.selection_orig_x = Fred.selection.x
+			this.selection_orig_y = Fred.selection.y
+		} else {
+			console.log('dragging_selection')
+			this.dragging_selection = true
+			this.selection_box.points[0].x = Fred.pointer_x
+			this.selection_box.points[0].y = Fred.pointer_y
+		}
 	},
 	on_mousemove: function() {
-		if (this.selected_object && Fred.drag) {
-			var x = this.selected_object_x + Fred.pointer_x - this.click_x
-			var y = this.selected_object_y + Fred.pointer_y - this.click_y
-			Fred.move(this.selected_object,x,y,true)
+		if (this.dragging_object) {
+			var x = this.selection_orig_x + Fred.pointer_x - this.click_x
+			var y = this.selection_orig_y + Fred.pointer_y - this.click_y
+			Fred.move(Fred.selection,x,y,true)
 		}
 	},
 	on_mouseup: function() {
-		if (this.selected_object && Fred.drag) {
-			this.selected_object.refresh()
-			this.selected_object = false
-		}
+		if (this.dragging_object) this.dragging_object = false
+		if (this.dragging_selection) this.dragging_selection = false
 	},
 	on_touchstart: function(event) {
 		this.on_mousedown(event)
@@ -584,7 +740,37 @@ Fred.tools.select = new Fred.Tool('select & manipulate objects',{
 		this.on_mouseup(event)
 	},
 	draw: function() {
+		if (this.dragging_selection) {
+			console.log('dragging')
+			this.selection_box.points[1].x = Fred.pointer_x
+			this.selection_box.points[2].x = Fred.pointer_x
+			this.selection_box.points[2].y = Fred.pointer_y
+			this.selection_box.points[3].y = Fred.pointer_y
+			this.selection_box.width = Fred.pointer_x-this.selection_box.points[0].x
+			this.selection_box.height = Fred.pointer_y-this.selection_box.points[0].y
+			save()
+				lineWidth(1)
+				opacity(0.7)
+				strokeStyle('#999')
+				strokeRect(this.selection_box.points[0].x,this.selection_box.points[0].y,this.selection_box.width,this.selection_box.height)
+				opacity(0.3)
+				rect(this.selection_box.points[0].x,this.selection_box.points[0].y,this.selection_box.width,this.selection_box.height)
+			restore()
 
+			this.get_selection_box()
+		}
+	},
+	get_selection_box: function() {
+		Fred.selection.clear()
+		Fred.objects.each(function(obj){
+			var all_inside = true
+			obj.points.each(function(point){
+				if (!Fred.Geometry.is_point_in_poly(this.selection_box.points,point.x,point.y)) all_inside = false
+			},this)
+			if (all_inside) Fred.selection.add(obj)
+			obj.selected = true
+		},this)
+		if (Fred.selection.size() == 0) Fred.selection.clear()
 	}
 })
 Fred.tools.pen = new Fred.Tool('draw polygons',{
