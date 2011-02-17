@@ -16,8 +16,6 @@
 // 	http://www.melexis.com/Sensor_ICs_Infrared_and_Optical/Infrared/Digital_plug__play_infrared_thermometer_in_a_TO-can_615.aspx
 // (Melexis MLX90614 infrared non contact temperature sensor)
 
-//Read data from the camera with the shell/terminal command (linux,mac) `screen -L /dev/ttyUSB* 9600`
-
 //Thermometer setup:
 
 // pin numbering -- looking down from above, 1-4 counter-clockwise starting to the CCW side of the marker
@@ -138,19 +136,13 @@ void loop()
     digitalWrite(MS1Y, MS1_MODE(modeType));  // Set state of MS1 based on the returned value from the MS1_MODE() switch statement.
     digitalWrite(MS2Y, MS2_MODE(modeType));  // Set state of MS2 based on the returned value from the MS2_MODE() switch statement.
     digitalWrite(SLEEPY, HIGH);              // Set the Sleep mode to AWAKE.
-
-    int panup = (int)(stepperdeg*degy);
-    while (panup>0) {
-        digitalWrite(STEPY, LOW);              // This LOW to HIGH change is what creates the..
-        digitalWrite(STEPY, HIGH);             // .."Rising Edge" so the easydriver knows to when to step.
-        delayMicroseconds(1600/modeType);      // This delay time determines the speed of the s
-        digitalWrite(DIRY, HIGH);
-      panup--;
-    }
   
     int stepx = 0;                              // Set the counter variable.     
-    Serial.print("X steps: ");
-    Serial.println(stepperdeg*degx);
+    Serial.print("image size: ");
+    Serial.print(stepperdeg*degx);
+    Serial.print(" x ");
+    Serial.println(stepperdeg*degy);
+
     while(stepx<(int)(stepperdeg*degx)) {
 
       Serial.print("Starting horizontal sweep ");
@@ -162,8 +154,6 @@ void loop()
 //      reading += '/';
 
       int stepy = 0;                              // Set the counter variable.     
-    Serial.print("Y steps: ");
-    Serial.println(stepperdeg*degy);
       while(stepy<(int)(stepperdeg*degy)) {
 //        Serial.print("Starting vertical sweep ");
 //          Serial.println(stepy);
@@ -188,11 +178,9 @@ void loop()
 //      reading = '>';
         
       if (diry == 0) {
-        Serial.println("up");
         digitalWrite(DIRY, LOW);                 // Set the direction change LOW to HIGH to go in opposite direction
         diry = 1;
       } else {
-        Serial.println("down");
         digitalWrite(DIRY, HIGH);
         diry = 0;
       }
@@ -296,15 +284,29 @@ long int readMLXtemperature(int TaTo) {
     int dev = 0x5A<<1;
 
   i2c_init();
-  i2c_start_wait(dev+I2C_WRITE);  // set device address and write mode
-  if (TaTo) i2c_write(0x06); else i2c_write(0x07);                // or command read object or ambient temperature
-  i2c_rep_start(dev+I2C_READ);    // set device address and read mode
-  dlsb = i2c_readAck();       // read data lsb
-  dmsb = i2c_readAck();      // read data msb
-  pec = i2c_readNak();
-  i2c_stop();
+  int connect;
+  connect = i2c_start(dev+I2C_WRITE);  // set device address and write mode
+//  Serial.print("connect:");
+//  Serial.println(connect);
+//  if (connect == 1) {
+//    Serial.print("start,");
+    if (TaTo) i2c_write(0x06); else i2c_write(0x07);                // or command read object or ambient temperature
+//    Serial.print("write,");
+    i2c_rep_start(dev+I2C_READ);    // set device address and read mode
+//    Serial.print("repstart,");
+    dlsb = i2c_readAck();       // read data lsb
+//    Serial.print("readAck1,");
+    dmsb = i2c_readAck();      // read data msb
+//    Serial.print("readAck2,");
+    pec = i2c_readNak();
+//    Serial.print("readNak,");
+    i2c_stop();
+//    Serial.print("stop,");
 
-  lii=dmsb*0x100+dlsb;
-  return(lii);
+    lii=dmsb*0x100+dlsb;
+    return(lii);
+//  } else {
+//    return (0);
+//  }
 }
 
