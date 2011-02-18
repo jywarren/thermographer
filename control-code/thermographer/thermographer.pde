@@ -25,7 +25,7 @@
   (         )
    \ 2   3 /
     \_____/
-*/
+ */
 
 //                                            pin - first ribbon - second ribbon
 // connect MLX90614 pin 1 SCL to Arduino pin analog 5 - green - green
@@ -42,40 +42,37 @@
 
 #include <i2cmaster.h>
 
-  // Set up digital pins for issuing commands to the motor controllers.
+// Set up digital pins for issuing commands to the motor controllers.
 
-  // x-axis stepper motor 
-  int DIRX = 3;          // PIN  3 = DIR (direction)
-  int STEPX = 2;        // PIN  2 = STEP (step the motor: typical resolution 200 full steps/360 degrees)
-  int MS1X = 13;        // PIN 13 = MS
-  int MS2X = 9;         // PIN  9 = MS2
-  int SLEEPX = 12;      // PIN 12 = SLP (sleep)
+// x-axis stepper motor 
+int DIRX = 3;          // PIN  3 = DIR (direction)
+int STEPX = 2;        // PIN  2 = STEP (step the motor: typical resolution 200 full steps/360 degrees)
+int MS1X = 13;        // PIN 13 = MS
+int MS2X = 9;         // PIN  9 = MS2
+int SLEEPX = 12;      // PIN 12 = SLP (sleep)
 
-  // y-axis stepper motor
-  int DIRY = 5;          // PIN  5 = DIR
-  int STEPY = 4;        // PIN  4 = STEP
-  int MS1Y = 7;        // PIN 7 = MS
-  int MS2Y = 8;         // PIN 8 = MS2
-  int SLEEPY = 6;      // PIN 6 = SLP
+// y-axis stepper motor
+int DIRY = 5;          // PIN  5 = DIR
+int STEPY = 4;        // PIN  4 = STEP
+int MS1Y = 7;        // PIN 7 = MS
+int MS2Y = 8;         // PIN 8 = MS2
+int SLEEPY = 6;      // PIN 6 = SLP
 
-  int dirx = 1;           // dir 0 = left, dir 1 = right
-  int diry = 1;           // dir 0 = down, dir 1 = up
+int dirx = 1;           // dir 0 = left, dir 1 = right
+int diry = 1;           // dir 0 = down, dir 1 = up
 
-  int modeType = 8;       // modeType 1: Full, 2: Half, 4: Quarter, 8: Eighth
+int modeType = 8;       // modeType 1: Full, 2: Half, 4: Quarter, 8: Eighth
 //  float stepperdeg = 0.55*modeType*40;     // steps, half steps, quarter or microsteps per degree
-  float stepperdeg = 0.55*modeType*40;     // steps, half steps, quarter or microsteps per degree
-  int degx = 16;          // degrees of field of view in x
-  int degy = 12;          // degrees of field of view in y
-  int degperpixel = 3;  // how many degrees wide each pixel should be 
-                          // (based on how narrow the beam is focused)
-  int lineheight = 1;
-  
-  //String imagestring = String(100);
-  //char imagecol[480];
-  char reading[100];
-  
-  int trigger = 0;
-  
+float stepperdeg = 0.55*modeType*40;     // steps, half steps, quarter or microsteps per degree
+int degx = 16;          // degrees of field of view in x
+int degy = 12;          // degrees of field of view in y
+int resolution = 4;  // 1/resolution of full resolution (full = 1 reading per step) 
+int countx = 0;          // resolution counter in x
+int county = 0;          // resolution counter in y
+int stepx = 0;                              // Set the counter variable.     
+
+char reading[100];
+
 //  I am using a Duemilanove, so I changed the twimaster.c to reflect the 16MHz clock, and changed the bus frequency to 50Khz: 
 //
 //#ifndef F_CPU 
@@ -93,9 +90,9 @@
 
 
 void setup() {
-  
+
   Serial.begin(9600);     // open the serial connection at 9600bps
-//  Serial.begin(115200);     // open the serial connection at 9600bps
+  //  Serial.begin(115200);     // open the serial connection at 9600bps
   Serial.println("Beginning setup");
 
   PORTC = (1 << PORTC4) | (1 << PORTC5);  //enable internal pullup resistors on i2c ports (for the melexis)
@@ -115,87 +112,80 @@ void setup() {
   pinMode(MS2Y, OUTPUT);   // set pin 10 to output
   pinMode(SLEEPY, OUTPUT); // set pin 12 to output
   Serial.println("Ending setup");
+
+
+  digitalWrite(MS1X, MS1_MODE(modeType));  // Set state of MS1 based on the returned value from the MS1_MODE() switch statement.
+  digitalWrite(MS2X, MS2_MODE(modeType));  // Set state of MS2 based on the returned value from the MS2_MODE() switch statement.
+  digitalWrite(SLEEPX, HIGH);              // Set the Sleep mode to AWAKE.
+
+  digitalWrite(MS1Y, MS1_MODE(modeType));  // Set state of MS1 based on the returned value from the MS1_MODE() switch statement.
+  digitalWrite(MS2Y, MS2_MODE(modeType));  // Set state of MS2 based on the returned value from the MS2_MODE() switch statement.
+  digitalWrite(SLEEPY, HIGH);              // Set the Sleep mode to AWAKE.
+
+  Serial.print("image size: ");
+  Serial.print((int)((stepperdeg*degx)/resolution));
+  Serial.print(" x ");
+  Serial.println((int)((stepperdeg*degy)/resolution));
+
 }
 
-void loop()
-{
-//  if (digitalRead(0) == HIGH) { // Only start imaging when you press the big button (not working)
-  trigger = 1;
-//  }
-//  Serial.print("trigger: ");
-//  Serial.println(trigger);
+void loop() {
 
-  Serial.println("Beginning loop");
-
-  
-  if (trigger == 1) {
-    digitalWrite(MS1X, MS1_MODE(modeType));  // Set state of MS1 based on the returned value from the MS1_MODE() switch statement.
-    digitalWrite(MS2X, MS2_MODE(modeType));  // Set state of MS2 based on the returned value from the MS2_MODE() switch statement.
-    digitalWrite(SLEEPX, HIGH);              // Set the Sleep mode to AWAKE.
-
-    digitalWrite(MS1Y, MS1_MODE(modeType));  // Set state of MS1 based on the returned value from the MS1_MODE() switch statement.
-    digitalWrite(MS2Y, MS2_MODE(modeType));  // Set state of MS2 based on the returned value from the MS2_MODE() switch statement.
-    digitalWrite(SLEEPY, HIGH);              // Set the Sleep mode to AWAKE.
-  
-    int stepx = 0;                              // Set the counter variable.     
-    Serial.print("image size: ");
-    Serial.print(stepperdeg*degx);
-    Serial.print(" x ");
-    Serial.println(stepperdeg*degy);
-
-    while(stepx<(int)(stepperdeg*degx)) {
-
-      Serial.print("Starting horizontal sweep ");
-      Serial.println(stepx);
+    if (stepx<(int)(stepperdeg*degx)) {
       move_x();
+
+      if (countx == resolution) {
+        Serial.println("");
+        Serial.print("<");
+        Serial.print((int)(stepx/resolution));
+        Serial.println(">");
+    
+        countx = 0;
         
-      //imagestring = String("/");
-      //imagestring += "/";
-//      reading += '/';
-
-      int stepy = 0;                              // Set the counter variable.     
-      while(stepy<(int)(stepperdeg*degy)) {
-//        Serial.print("Starting vertical sweep ");
-//          Serial.println(stepy);
-        move_y();
+        int stepy = 0;                              // Set the counter variable.     
+        while(stepy<(int)(stepperdeg*degy)) {
+          move_y();
+          if (county == resolution) {
+            county = 0;
   
-        // Thermometer section:
-        long int tpl;
-  
-        tpl=readMLXtemperature(0); // read sensor object temperature
-        tpl = tpl *10;
-        tpl = tpl / 5;
-        tpl=tpl-27315;
+            //        Serial.print("Starting vertical sweep ");
+            //          Serial.println(stepy);
+    
+            // Thermometer section:
+            long int tpl;
+    
+            tpl=readMLXtemperature(0); // read sensor object temperature
+            tpl = tpl *10;
+            tpl = tpl / 5;
+            tpl=tpl-27315;
+    
+            //sprintf(st1,"object temp: %03li.%li",tpl/100, abs(tpl %100) );
+            sprintf(reading,"%03li.%li,",tpl/100, abs(tpl %100) );
+            Serial.print(reading); // print one row of data
+    
+          }
+          delayMicroseconds(200);      // This delay time determines the speed of the stepper motor. 
+          stepy++;
+          county++;
+        }
+        if (diry == 0) {
+//          Serial.println("up");
+          digitalWrite(DIRY, LOW);                 // Set the direction change LOW to HIGH to go in opposite direction
+          diry = 1;
+        } else {
+//          Serial.println("down");
+          digitalWrite(DIRY, HIGH);
+          diry = 0;
+        }
 
-        //sprintf(st1,"object temp: %03li.%li",tpl/100, abs(tpl %100) );
-        sprintf(reading,"%03li.%li,",tpl/100, abs(tpl %100) );
-        Serial.print(reading); // print one row of data
-
-        stepy += 1;
-      }                              
-  
-//      Serial.println(reading);
-//      reading = '>';
-        
-      if (diry == 0) {
-        digitalWrite(DIRY, LOW);                 // Set the direction change LOW to HIGH to go in opposite direction
-        diry = 1;
-      } else {
-        digitalWrite(DIRY, HIGH);
-        diry = 0;
       }
-  
-      stepx += 1;
-    }                              
-  
-    //modeType = modeType * 2;                // Multiply the current modeType value by 2 and make the result the new value for modeType.
-                                              // This will make the modeType variable count 1,2,4,8 each time we pass though the while loop.
-     
-    digitalWrite(SLEEPX, LOW);                 // switch off the power to stepper
-    digitalWrite(SLEEPY, LOW);                 // switch off the power to stepper
-  
+      stepx++;
+      countx++;
+
   }
-  
+//    digitalWrite(SLEEPX, LOW);                 // switch off the power to stepper
+//    digitalWrite(SLEEPY, LOW);                 // switch off the power to stepper
+
 }
 
 
@@ -211,32 +201,24 @@ int write_image(float temp) {
   // For now we'll just write to serial monitor. Later we will implement other storage techniques.
   Serial.print(",");
   Serial.print(temp);
-  
+
 }
 
 int move_x() {
-      int i = lineheight;
-      while (i > 0) {
-        digitalWrite(STEPX, LOW);              // This LOW to HIGH change is what creates the..
-        digitalWrite(STEPX, HIGH);             // .."Rising Edge" so the easydriver knows to when to step.
-        delayMicroseconds(1600/modeType);      // This delay time determines the speed of the stepper motor. 
-        i--;
-      } 
+    digitalWrite(STEPX, LOW);              // This LOW to HIGH change is what creates the..
+    digitalWrite(STEPX, HIGH);             // .."Rising Edge" so the easydriver knows to when to step.
+    delayMicroseconds(1600/modeType);      // This delay time determines the speed of the stepper motor. 
 }
 
 int move_y() {
-      int i = lineheight;
-      while (i > 0) {
-        digitalWrite(STEPY, LOW);              // This LOW to HIGH change is what creates the..
-        digitalWrite(STEPY, HIGH);             // .."Rising Edge" so the easydriver knows to when to step.
-        delayMicroseconds(1600/modeType);      // This delay time determines the speed of the stepper motor. 
-        i--;
-      } 
+    digitalWrite(STEPY, LOW);              // This LOW to HIGH change is what creates the..
+    digitalWrite(STEPY, HIGH);             // .."Rising Edge" so the easydriver knows to when to step.
+    delayMicroseconds(1600/modeType);      // This delay time determines the speed of the stepper motor. 
 }
 
 int MS1_MODE(int MS1_StepMode){              // A function that returns a High or Low state number for MS1 pin
   switch(MS1_StepMode){                      // Switch statement for changing the MS1 pin state
-                                             // Different input states allowed are 1,2,4 or 8
+    // Different input states allowed are 1,2,4 or 8
   case 1:
     MS1_StepMode = 0;
     Serial.println("Step Mode is Full...");
@@ -259,7 +241,7 @@ int MS1_MODE(int MS1_StepMode){              // A function that returns a High o
 
 int MS2_MODE(int MS2_StepMode){              // A function that returns a High or Low state number for MS2 pin
   switch(MS2_StepMode){                      // Switch statement for changing the MS2 pin state
-                                             // Different input states allowed are 1,2,4 or 8
+    // Different input states allowed are 1,2,4 or 8
   case 1:
     MS2_StepMode = 0;
     break;
@@ -279,34 +261,29 @@ int MS2_MODE(int MS2_StepMode){              // A function that returns a High o
 //****************************************************************
 // read MLX90614 i2c ambient or object temperature
 long int readMLXtemperature(int TaTo) {
-    long int lii;
-    int dlsb,dmsb,pec;
-    int dev = 0x5A<<1;
+  long int lii;
+  int dlsb,dmsb,pec;
+  int dev = 0x5A<<1;
 
   i2c_init();
   int connect;
-  connect = i2c_start(dev+I2C_WRITE);  // set device address and write mode
-//  Serial.print("connect:");
-//  Serial.println(connect);
+//  connect = i2c_start(dev+I2C_WRITE);  // set device address and write mode
+    i2c_start_wait(dev+I2C_WRITE);  // set device address and write mode
 //  if (connect == 1) {
-//    Serial.print("start,");
-    if (TaTo) i2c_write(0x06); else i2c_write(0x07);                // or command read object or ambient temperature
-//    Serial.print("write,");
+    if (TaTo) i2c_write(0x06); 
+    else i2c_write(0x07);                // or command read object or ambient temperature
     i2c_rep_start(dev+I2C_READ);    // set device address and read mode
-//    Serial.print("repstart,");
     dlsb = i2c_readAck();       // read data lsb
-//    Serial.print("readAck1,");
     dmsb = i2c_readAck();      // read data msb
-//    Serial.print("readAck2,");
     pec = i2c_readNak();
-//    Serial.print("readNak,");
     i2c_stop();
-//    Serial.print("stop,");
 
     lii=dmsb*0x100+dlsb;
     return(lii);
-//  } else {
+//  } 
+//  else {
 //    return (0);
 //  }
 }
+
 
