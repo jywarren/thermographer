@@ -8,9 +8,10 @@ data = Array.new
 max = 0
 min = 999
 
-#raw.split('/').each do |col|
 while (col = f.gets)
   data_col = Array.new
+  # check for trailing comma, remove it:
+  col = col[0..-4] if col[-3] == 44
   col.split(',').each do |cell|
     data_col << cell
     max = cell.to_f if cell.to_f > max
@@ -24,7 +25,7 @@ puts data.length.to_s + "," + data[0].length.to_s
 img = Magick::Image.new(data.length, data[0].length)
 
 data.each_with_index do |row, row_index|
-  row = row.reverse if (row_index/2 == (row_index/2).to_i)
+  row = row.reverse unless row_index.odd?
   row.each_with_index do |item, column_index|
     #puts "setting #{row_index}/#{column_index} to #{item}"
     item = 255*((item.to_f - min)/(max - min))
