@@ -10,14 +10,16 @@ min = 999
 
 while (col = f.gets)
   data_col = Array.new
-  # check for trailing comma, remove it:
-  col = col[0..-4] if col[-3] == 44
-  col.split(',').each do |cell|
-    data_col << cell
-    max = cell.to_f if cell.to_f > max
-    min = cell.to_f if cell.to_f < min
+  if col[0] != 60 # if it's not the line number <#>
+    # check for trailing comma, remove it:
+    col = col[0..-4] if col[-3] == 44
+    col.split(',').each do |cell|
+      data_col << cell
+      max = cell.to_f if cell.to_f > max
+      min = cell.to_f if cell.to_f < min
+    end
+    data << data_col
   end
-  data << data_col
 end
 
 #puts data
