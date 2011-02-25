@@ -27,7 +27,7 @@ end
 puts data.length.to_s + "," + data[0].length.to_s
 img = Magick::Image.new(data.length, data[0].length)
 
-data.each_with_index do |row, row_index|
+data.reverse.each_with_index do |row, row_index|
   row = row.reverse unless row_index.odd?
   row.each_with_index do |item, column_index|
     #puts "setting #{row_index}/#{column_index} to #{item}"
