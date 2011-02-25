@@ -18,6 +18,7 @@ while (col = f.gets)
       max = cell.to_f if cell.to_f > max
       min = cell.to_f if cell.to_f < min
     end
+#    puts data_col
     data << data_col
   end
 end
