@@ -31,11 +31,11 @@ puts data.length.to_s + "," + data[0].length.to_s
 img = Magick::Image.new(width, height)
 
 data.each_with_index do |row, row_index|
-  row = row.reverse unless (width-row_index).odd?
+  row = row.reverse unless (row_index).odd?
   row.each_with_index do |item, column_index|
     #puts "setting #{row_index}/#{column_index} to #{item}"
     item = 255*((item.to_f - min)/(max - min))
-    img.pixel_color(row_index, column_index, "rgb(#{item}, #{item}, #{item})")
+    img.pixel_color(width-row_index, column_index, "rgb(#{item}, #{item}, #{item})")
   end
 end
 
