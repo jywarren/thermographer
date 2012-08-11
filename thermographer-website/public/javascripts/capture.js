@@ -24,8 +24,10 @@ $T = {
 		window.webcam = this.options
 		this.canvas = document.getElementById("canvas")
 		this.buffer = document.getElementById("buffer")
-		//$('canvas').width = this.width+"px"
-		//$('buffer').width = this.width+"px"
+		this.canvas.width = this.width
+		this.canvas.height = this.height
+		this.buffer.width = this.width
+		this.buffer.height = this.height
 		this.ctx = this.canvas.getContext("2d")
 		this.bctx = this.buffer.getContext("2d")
 	},
@@ -127,17 +129,17 @@ $T = {
 		img = $T.ctx.getImageData(0,0,$T.width,$T.height)
 		bfr = $T.bctx.getImageData(0,0,$T.width,$T.height)
 
-		for (i=0;i<(($T.width*$T.height)-1);i++) { 
+		for (i=0;i<(4*$T.width*$T.height);i++) { 
 			r = img.data[i]
-			g = img.data[i+1]
-			b = img.data[i+2]
+			//g = img.data[i+1]
+			//b = img.data[i+2]
 			br = bfr.data[i]
-			bg = bfr.data[i+1]
-			bb = bfr.data[i+2]
+			//bg = bfr.data[i+1]
+			//bb = bfr.data[i+2]
 			// we can make this more efficient with byte math:
 			if (br > r) img.data[i] = br
-			if (bg > g) img.data[i+1] = bg
-			if (bb > b) img.data[i+2] = bb
+			//if (bg > g) img.data[i+1] = bg
+			//if (bb > b) img.data[i+2] = bb
 		} 
 		
 		$T.ctx.putImageData(img,0,0)
@@ -160,6 +162,8 @@ $T = {
                 }
 	},
 	saveImage: function() {
+		//temp quick fix:
+		window.location = $T.ctx.getDataUrl()
 		is_c = $('#is_calibration')
 		if (is_c.checked) {
 			$('#choose_calibration').hide()
