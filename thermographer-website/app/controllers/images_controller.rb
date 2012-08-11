@@ -10,6 +10,18 @@ class ImagesController < ApplicationController
     end
   end
 
+  def capture
+    respond_to do |format|
+      format.html { 
+        #if mobile?
+          render "images/capture.mobile.erb", :layout => "mobile" 
+        #else
+        #  render 'images/index' 
+        #end
+      } # show.html.erb
+    end
+  end
+
   # GET /images/1
   # GET /images/1.xml
   def show

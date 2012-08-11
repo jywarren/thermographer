@@ -1,4 +1,6 @@
 Thermographer::Application.routes.draw do
+
+  match 'capture' => 'images#capture'
   resources :images
 
   # The priority is based upon order of creation:
@@ -50,7 +52,7 @@ Thermographer::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  root :to => "images#index"
+  root :to => "images#capture"
 
   # See how all your routes lay out with "rake routes"
 
