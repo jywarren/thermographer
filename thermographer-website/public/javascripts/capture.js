@@ -167,7 +167,7 @@ $T = {
 	},
 	saveImage: function() {
 		//temp quick fix:
-		window.location = $T.canvas.toDataURL()
+		window.location = $T.excerptCanvas(0,0,$T.width,$T.height,$T.ctx).canvas.toDataURL()
 		//is_c = $('#is_calibration')
 		//if (is_c.checked) {
 		//	$('#choose_calibration').hide()
