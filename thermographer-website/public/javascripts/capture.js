@@ -167,7 +167,7 @@ $T = {
 	},
 	saveImage: function() {
 		//temp quick fix:
-		window.location = $T.ctx.toDataUrl()
+		window.location = $T.canvas.toDataURL()
 		//is_c = $('#is_calibration')
 		//if (is_c.checked) {
 		//	$('#choose_calibration').hide()
