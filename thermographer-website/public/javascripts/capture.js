@@ -26,8 +26,12 @@ $T = {
 		this.buffer = document.getElementById("buffer")
 		this.canvas.width = this.width
 		this.canvas.height = this.height
+		this.canvas.style.width = this.width+"px"
+		this.canvas.style.height = this.height+"px"
 		this.buffer.width = this.width
 		this.buffer.height = this.height
+		this.buffer.style.width = this.width+"px"
+		this.buffer.style.height = this.height+"px"
 		this.ctx = this.canvas.getContext("2d")
 		this.bctx = this.buffer.getContext("2d")
 	},
@@ -163,21 +167,21 @@ $T = {
 	},
 	saveImage: function() {
 		//temp quick fix:
-		window.location = $T.ctx.getDataUrl()
-		is_c = $('#is_calibration')
-		if (is_c.checked) {
-			$('#choose_calibration').hide()
-			is_c.val(true) 
-		} else {
-			$('#choose_calibration').show()
-			is_c.val(false)
-			$('#calibration_id').val($T.calibration_id)
-		}
-		$('#dataurl').val($T.canvas.toDataURL())
-		$('#geotag').val($('#geotag-toggle').val() == "on")
-		$('#save').show()
-		$('#capture').hide()
-		setTimeout(function() { if ($('#geotag-toggle').val() == "on") $T.geolocate() },500)
+		window.location = $T.ctx.toDataUrl()
+		//is_c = $('#is_calibration')
+		//if (is_c.checked) {
+		//	$('#choose_calibration').hide()
+		//	is_c.val(true) 
+		//} else {
+		//	$('#choose_calibration').show()
+		//	is_c.val(false)
+		//	$('#calibration_id').val($T.calibration_id)
+		//}
+		//$('#dataurl').val($T.canvas.toDataURL())
+		//$('#geotag').val($('#geotag-toggle').val() == "on")
+		//$('#save').show()
+		//$('#capture').hide()
+		//setTimeout(function() { if ($('#geotag-toggle').val() == "on") $T.geolocate() },500)
 	},
 	cancelSave: function() {
 		$('#geotag').val('false')
