@@ -5,6 +5,12 @@
   <%= stylesheet_link_tag :all %>
   <%= javascript_include_tag :defaults %>
   <%= csrf_meta_tag %>
+  <script>
+    $(document).bind("mobileinit", function(){
+      // disable ajax nav
+      $.mobile.ajaxEnabled = false;
+    });
+  </script>
 </head>
 <body>
 

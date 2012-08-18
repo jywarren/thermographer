@@ -1,6 +1,6 @@
 class Image < ActiveRecord::Base
   validates_presence_of :name, :on => :create, :message => "can't be blank"
-  validates_presence_of :author, :on => :create, :message => "can't be blank"
+#  validates_presence_of :author, :on => :create, :message => "can't be blank"
   validates_presence_of :photo, :on => :create, :message => "can't be blank"
 
   validates_format_of     :name,

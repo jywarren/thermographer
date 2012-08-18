@@ -19,8 +19,6 @@ $T = {
 		if (args['height']) {
 			this.options.height = args['height'] 
 			this.options.width = args['width']
-			this.height = args['height'] 
-			this.width = args['width']
 		}
 		getUserMedia(this.options, this.success, this.deviceError)
 		window.webcam = this.options
@@ -151,11 +149,6 @@ $T = {
 		$T.ctx.putImageData(img,0,0)
 
 	},
-
-	clear: function() {
-		$T.ctx.clearRect(0,0,$T.width,$T.height)
-	},
-
 	geolocate: function() {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition($T.setGeolocation)
@@ -174,21 +167,14 @@ $T = {
 	},
 	saveImage: function() {
 		//temp quick fix:
-		window.location = $T.excerptCanvas(0,0,$T.width,$T.height,$T.ctx).canvas.toDataURL()
-		//is_c = $('#is_calibration')
-		//if (is_c.checked) {
-		//	$('#choose_calibration').hide()
-		//	is_c.val(true) 
-		//} else {
-		//	$('#choose_calibration').show()
-		//	is_c.val(false)
-		//	$('#calibration_id').val($T.calibration_id)
-		//}
-		//$('#dataurl').val($T.canvas.toDataURL())
+		//window.location = $T.excerptCanvas(0,0,$T.width,$T.height,$T.ctx).canvas.toDataURL()
+		console.log('saving')
+		$('#dataurl').val($T.canvas.toDataURL())
 		//$('#geotag').val($('#geotag-toggle').val() == "on")
-		//$('#save').show()
-		//$('#capture').hide()
-		//setTimeout(function() { if ($('#geotag-toggle').val() == "on") $T.geolocate() },500)
+		$('#save').show()
+		$('#capture').hide()
+		setTimeout(function() { if ($('#geotag-toggle').val() == "on") $T.geolocate() },500)
+		console.log('saving 2')
 	},
 	cancelSave: function() {
 		$('#geotag').val('false')

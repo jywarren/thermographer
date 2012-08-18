@@ -1,39 +1,30 @@
-<h1>Listing images</h1>
+<div data-role="page" id="page1">
+
+        <div data-theme="d" data-role="header">
+                <a data-ajax="false" data-role="button" data-transition="fade" data-theme="c" href="/capture">&laquo; Back to capture</a>
+                <h3>
+			Thermal images
+                </h3>
+        </div>
 
 <table>
   <tr>
-    <th>Id</th>
+    <th>Image</th>
     <th>Name</th>
     <th>Author</th>
     <th>Description</th>
-    <th>Version</th>
-    <th>Data</th>
-    <th>Width</th>
-    <th>Height</th>
-    <th>Composite</th>
-    <th></th>
-    <th></th>
-    <th></th>
+    <!--<th></th>-->
   </tr>
 
 <% @images.each do |image| %>
   <tr>
-    <td><%= image.id %></td>
-    <td><%= image.name %></td>
+    <td><a href="/images/<%= image.id %>"><img id="image" style="width:100%" src="<%= image.photo.url(:thumb) %>" /></a></td>
+    <td><a href="/images/<%= image.id %>"><%= image.name %></a></td>
     <td><%= image.author %></td>
     <td><%= image.description %></td>
-    <td><%= image.version %></td>
-    <td><%= image.data %></td>
-    <td><%= image.width %></td>
-    <td><%= image.height %></td>
-    <td><%= image.composite %></td>
-    <td><%= link_to 'Show', image %></td>
-    <td><%= link_to 'Edit', edit_image_path(image) %></td>
-    <td><%= link_to 'Destroy', image, :confirm => 'Are you sure?', :method => :delete %></td>
+    <!--<td><%= link_to 'Destroy', image, :confirm => 'Are you sure?', :method => :delete %></td>-->
   </tr>
 <% end %>
 </table>
 
-<br />
-
-<%= link_to 'New Image', new_image_path %>
+</div>

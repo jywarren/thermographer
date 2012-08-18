@@ -5,7 +5,7 @@ class ImagesController < ApplicationController
     @images = Image.all
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html { render :layout => "mobile" } # index.html.erb
       format.xml  { render :xml => @images }
     end
   end
@@ -28,7 +28,7 @@ class ImagesController < ApplicationController
     @image = Image.find(params[:id])
 
     respond_to do |format|
-      format.html { render :layout => false } # show.html.erb
+      format.html { render :layout => "mobile" } # show.html.erb
       format.xml  { render :xml => @image }
     end
   end
