@@ -53,6 +53,7 @@ class ImagesController < ApplicationController
   # POST /images.xml
   def create
     @image = Image.new(params[:image])
+    @image.image_from_dataurl(params[:dataurl])
 
     respond_to do |format|
       if @image.save
