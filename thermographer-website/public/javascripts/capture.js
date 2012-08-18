@@ -19,6 +19,8 @@ $T = {
 		if (args['height']) {
 			this.options.height = args['height'] 
 			this.options.width = args['width']
+			this.height = args['height'] 
+			this.width = args['width']
 		}
 		getUserMedia(this.options, this.success, this.deviceError)
 		window.webcam = this.options
@@ -149,6 +151,11 @@ $T = {
 		$T.ctx.putImageData(img,0,0)
 
 	},
+
+	clear: function() {
+		$T.ctx.clearRect(0,0,$T.width,$T.height)
+	},
+
 	geolocate: function() {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition($T.setGeolocation)
