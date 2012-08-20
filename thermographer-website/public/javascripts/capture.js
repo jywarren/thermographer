@@ -170,13 +170,11 @@ $T = {
 	saveImage: function() {
 		//temp quick fix:
 		//window.location = $T.excerptCanvas(0,0,$T.width,$T.height,$T.ctx).canvas.toDataURL()
-		console.log('saving')
 		$('#dataurl').val($T.canvas.toDataURL())
 		//$('#geotag').val($('#geotag-toggle').val() == "on")
 		$('#save').show()
 		$('#capture').hide()
 		setTimeout(function() { if ($('#geotag-toggle').val() == "on") $T.geolocate() },500)
-		console.log('saving 2')
 	},
 	cancelSave: function() {
 		$('#geotag').val('false')
