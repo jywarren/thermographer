@@ -19,6 +19,8 @@ $T = {
 		if (args['height']) {
 			this.options.height = args['height'] 
 			this.options.width = args['width']
+			this.height = args['height'] 
+			this.width = args['width']
 		}
 		getUserMedia(this.options, this.success, this.deviceError)
 		window.webcam = this.options
