@@ -1,5 +1,9 @@
 <!DOCTYPE html>
+<% if params[:action] == "index" %>
+<html manifest="/index.manifest">
+<% else %>
 <html>
+<% end %>
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,6 +12,7 @@
 	<link rel="stylesheet" href="/stylesheets/smoothness/jquery-ui-1.8.21.custom.css">
         <link rel="stylesheet" href="/stylesheets/mobile.css" />
         <script src="/javascripts/jquery.min.js">
+        <script src="/javascripts/todataurl.js">
         </script>
         <script>
           $(document).bind("mobileinit", function(){
