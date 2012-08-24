@@ -181,6 +181,10 @@ $T = {
 		$('#lon').val('')
 		$('#lat').val('')
 	},
+	clear: function() {
+		$T.ctx.clearRect(0,0,$T.width,$T.height)
+	},
+
         /**
          * Returns a canvas object of any rect from the offered canvas
          */

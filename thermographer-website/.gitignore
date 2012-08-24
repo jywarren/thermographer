@@ -5,4 +5,5 @@ tmp/**/*
 *.swo
 *.line_data.dat
 config/database.yml
+public/system
 
